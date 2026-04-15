@@ -1,0 +1,86 @@
+/* ============================================================
+   MDB PIXEL-PERFECT NORMALIZATION
+   Forces absolute parity with local React version
+   ============================================================ */
+
+/* 1. Global Reset for Shopify Section Containers */
+#shopify-section-header, 
+#shopify-section-footer,
+.shopify-section {
+  display: contents !important;
+}
+
+/* 2. Design System Tokens (Forced Parity) */
+:root {
+  --color-bg: #0a0a0a;
+  --color-primary: #CC0000;
+  --color-text: #FFFFFF;
+  --color-text-muted: #999999;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-heading: 'Oswald', sans-serif;
+  --font-body: 'Montserrat', sans-serif;
+  --navbar-height: 64px;
+}
+
+/* 3. Global Industrial Overrides */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-bg) !important;
+  color: var(--color-text) !important;
+  font-family: var(--font-body) !important;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* 4. Fix for automatic Shopify padding */
+div#MainContent {
+  padding-top: 0 !important;
+}
+
+/* 5. Logo Construction (Geometric Parity) */
+.mdb-logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  line-height: 1;
+  user-select: none;
+  font-size: 2.2rem;
+}
+
+.mdb-logo-text {
+  display: flex;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+}
+
+.mdb-logo-d {
+  position: relative;
+  margin: 0 -0.05em;
+}
+
+.mdb-logo-accent {
+  position: absolute;
+  bottom: 0.12em;
+  left: 0.22em;
+  width: 0.45em;
+  height: 0.45em;
+  background: #CC0000;
+  clip-path: polygon(0% 100%, 100% 100%, 0% 0%);
+  z-index: 1;
+}
+
+/* 6. Animations (Base States) */
+.gsap-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+}

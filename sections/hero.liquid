@@ -57,18 +57,50 @@
 </section>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    gsap.fromTo(".animate-hero", 
-      { opacity: 0, y: 30 },
-      { 
-        opacity: 1, 
-        y: 0, 
-        duration: 1, 
-        stagger: 0.15,
-        delay: 0.5,
-        ease: "power2.out"
-      }
-    );
+  // Global Animation Parity (Framer Motion -> GSAP)
+  document.addEventListener('DOMContentLoaded', () => {
+    const tl = gsap.timeline();
+
+    // 1. Text Block Reveal
+    tl.to('.hero-text-block', {
+      opacity: 1,
+      y: 0,
+      duration: 0.7,
+      ease: 'power2.out'
+    });
+
+    // 2. Title & Tagline Reveal (Delay 0.2)
+    tl.to('.hero-title-wrap', {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power1.out'
+    }, "-=0.5");
+
+    // 3. Buttons Reveal (Delay 0.55)
+    tl.to('.hero-buttons', {
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      ease: 'power1.out'
+    }, 0.55);
+
+    // 4. Stats Reveal (Delay 0.7)
+    tl.to('.hero-stats', {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      ease: 'power1.out'
+    }, 0.7);
+
+    // 5. Scroll Indicator Loop
+    gsap.to('.hero-scrollIndicator', {
+      y: 8,
+      duration: 0.9,
+      repeat: -1,
+      yoyo: true,
+      ease: 'sine.inOut'
+    });
   });
 </script>
 
