@@ -28,6 +28,10 @@
     <!-- Estilos dinámicos inyectados por secciones -->
     {% render 'css-variables' %}
 
+    <!-- GSAP for High-Fidelity Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
     <script>
       document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
     </script>
@@ -46,21 +50,27 @@
     {% render 'auth-drawer' %}
     
     <script>
-      // Scroll Reveal System (Replaces Framer Motion)
+      // High-Fidelity Scroll Animation System with GSAP
       document.addEventListener("DOMContentLoaded", () => {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("is-visible");
-              observer.unobserve(entry.target);
-            }
-          });
-        }, {
-          threshold: 0.1,
-          rootMargin: "0px 0px -50px 0px"
-        });
+        gsap.registerPlugin(ScrollTrigger);
 
-        document.querySelectorAll(".animate-on-scroll").forEach((el) => observer.observe(el));
+        // Animate elements with class .animate-on-scroll
+        document.querySelectorAll(".animate-on-scroll").forEach((el) => {
+          gsap.fromTo(el, 
+            { opacity: 0, y: 30 },
+            { 
+              opacity: 1, 
+              y: 0, 
+              duration: 1, 
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: el,
+                start: "top 85%",
+                toggleActions: "play none none none"
+              }
+            }
+          );
+        });
       });
     </script>
   </body>
