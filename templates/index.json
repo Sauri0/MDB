@@ -105,10 +105,28 @@
         "benefit_5",
         "benefit_6"
       ]
+    },
+    "featured_collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title_part1": "NUESTRO",
+        "title_part2": "CATÁLOGO",
+        "subtitle": "Más de 100 productos disponibles · Consultá precio por WhatsApp",
+        "limit": 8
+      }
+    },
+    "contact_form": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "HABLEMOS DE NEGOCIOS",
+        "text": "Completá el formulario para que un ejecutivo de cuentas se ponga en contacto a la brevedad."
+      }
     }
   },
   "order": [
     "hero",
-    "benefits"
+    "benefits",
+    "featured_collection",
+    "contact_form"
   ]
 }

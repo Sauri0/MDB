@@ -1,0 +1,127 @@
+{{ 'component-featured-collection.css' | asset_url | stylesheet_tag }}
+
+<section id="catalogo" class="section featured-collection">
+  <div class="container">
+    <!-- Header -->
+    <div class="catalog-header animate-on-scroll is-visible">
+      <h2 class="section-title">
+        {{ section.settings.title_part1 }} <span>{{ section.settings.title_part2 }}</span>
+      </h2>
+      <div class="divider"></div>
+      <p class="catalog-subtitle">
+        {{ section.settings.subtitle }}
+      </p>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="catalog-grid">
+      {%- if section.settings.collection != blank -%}
+        {%- for product in section.settings.collection.products limit: section.settings.limit -%}
+          <div class="product-card animate-on-scroll" style="animation-delay: {{ forloop.index | times: 0.1 }}s">
+            
+            {%- if product.compare_at_price > product.price -%}
+              <span class="product-badge badge-popular">OFERTA</span>
+            {%- elsif forloop.first -%}
+              <span class="product-badge badge-nuevo">DESTACADO</span>
+            {%- endif -%}
+
+            <a href="{{ product.url }}" class="product-image-wrap">
+              {%- if product.featured_image -%}
+                <img src="{{ product.featured_image | img_url: '400x' }}" alt="{{ product.title | escape }}" class="product-image" loading="lazy">
+              {%- else -%}
+                <div class="product-image-placeholder">🏷️</div>
+              {%- endif -%}
+            </a>
+
+            <div class="product-info">
+              <span class="product-vendor">{{ product.vendor }}</span>
+              <a href="{{ product.url }}" class="product-title">{{ product.title }}</a>
+              {% if customer %}
+                <span class="product-price">{{ product.price | money }}</span>
+              {% else %}
+                <span class="product-price-logged-out">Ingresá para ver precio</span>
+              {% endif %}
+            </div>
+
+            <div class="product-actions">
+              {% if customer %}
+                <button class="btn-add-cart" onclick="window.ShopifyCart && window.ShopifyCart.updateItem({{ product.variants.first.id }}, 1); window.ShopifyCart.open();">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                  AGREGAR
+                </button>
+              {% else %}
+                <a href="https://wa.me/541158771523?text=Hola! Quiero consultar por el producto: {{ product.title }}" target="_blank" class="btn-consultar">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                  CONSULTAR PRECIO
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <!-- Mockups if no collection selected -->
+        {%- for i in (1..section.settings.limit) -%}
+          <div class="product-card animate-on-scroll" style="animation-delay: {{ forloop.index | times: 0.1 }}s">
+            <span class="product-badge badge-premium">EJEMPLO</span>
+            <div class="product-image-wrap">
+              <div class="product-image-placeholder">🍷</div>
+            </div>
+            <div class="product-info">
+              <span class="product-vendor">BODEGA MDB</span>
+              <span class="product-title">Vino Malbec Reserva</span>
+              <span class="product-price-logged-out">Ingresá para ver precio</span>
+            </div>
+            <div class="product-actions">
+               <button class="btn-consultar">CONSULTAR PRECIO</button>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Catálogo Destacado",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title_part1",
+      "label": "Título Parte 1",
+      "default": "NUESTRO"
+    },
+    {
+      "type": "text",
+      "id": "title_part2",
+      "label": "Título Parte Acento",
+      "default": "CATÁLOGO"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtítulo",
+      "default": "Más de 100 productos disponibles · Consultá precio por WhatsApp"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Colección a Mostrar"
+    },
+    {
+      "type": "range",
+      "id": "limit",
+      "min": 4,
+      "max": 16,
+      "step": 4,
+      "label": "Cantidad de productos",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Catálogo Destacado"
+    }
+  ]
+}
+{% endschema %}

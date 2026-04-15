@@ -25,7 +25,7 @@
 <nav class="header">
   <div class="container header-inner">
     <!-- Logo -->
-    <a href="{{ routes.root_url }}" class="header-logo">
+    <a href="/" class="header-logo">
       <span class="header-logo-text">
         MDB<span class="header-logo-flame">.</span>
       </span>
@@ -33,11 +33,10 @@
 
     <!-- Desktop Nav Links -->
     <ul class="header-nav">
-      {% for link in linklists[section.settings.menu].links %}
-        <li>
-          <a href="{{ link.url }}" class="header-nav-link">{{ link.title }}</a>
-        </li>
-      {% endfor %}
+      <li><a href="/" class="header-nav-link">Inicio</a></li>
+      <li><a href="/collections/all" class="header-nav-link">Catálogo</a></li>
+      <li><a href="/#beneficios" class="header-nav-link">Beneficios</a></li>
+      <li><a href="/#contacto" class="header-nav-link">Contacto</a></li>
     </ul>
 
     <!-- CTA Actions -->
@@ -58,11 +57,11 @@
         COTIZAR
       </a>
 
-      <!-- Login Auth -->
+      <!-- Login Auth Modal Trigger -->
       {% if customer %}
-        <a href="{{ routes.account_url }}" class="header-login-btn">CUENTA</a>
+        <a href="{{ routes.account_url }}" class="header-login-btn">MI CUENTA</a>
       {% else %}
-        <a href="{{ routes.account_login_url }}" class="header-login-btn">INGRESAR</a>
+        <a href="#" class="header-login-btn js-auth-trigger">INGRESAR</a>
       {% endif %}
 
       <!-- Hamburger -->
@@ -74,9 +73,10 @@
 
   <!-- Mobile Menu -->
   <div class="header-mobile-menu">
-    {% for link in linklists[section.settings.menu].links %}
-      <a href="{{ link.url }}" class="header-mobile-link">{{ link.title }}</a>
-    {% endfor %}
+    <a href="/" class="header-mobile-link">Inicio</a>
+    <a href="/collections/all" class="header-mobile-link">Catálogo</a>
+    <a href="/#beneficios" class="header-mobile-link">Beneficios</a>
+    <a href="/#contacto" class="header-mobile-link">Contacto</a>
     <a href="https://wa.me/{{ section.settings.whatsapp_number }}?text=Hola! Me gustaría cotizar productos de MDB." target="_blank" class="header-mobile-cotizar">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
       COTIZAR POR WHATSAPP

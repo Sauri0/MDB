@@ -1,0 +1,133 @@
+{{ 'component-auth-drawer.css' | asset_url | stylesheet_tag }}
+
+<div class="auth-drawer-backdrop" id="AuthDrawerBackdrop" onclick="closeAuthDrawer()"></div>
+
+<div class="auth-drawer" id="AuthDrawer">
+  <!-- Header -->
+  <div class="auth-header">
+    <div class="header-logo">
+      <span class="header-logo-text">MDB<span class="header-logo-flame">.</span></span>
+    </div>
+    <button class="auth-close-btn" onclick="closeAuthDrawer()" aria-label="Cerrar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="auth-content">
+    <div class="auth-tabs">
+      <button class="auth-tab-btn is-active" id="tabLogin" onclick="toggleAuthTab('login')">INGRESAR</button>
+      <button class="auth-tab-btn" id="tabRegister" onclick="toggleAuthTab('register')">CREAR CUENTA</button>
+    </div>
+
+    <!-- Login View -->
+    <div id="viewLogin">
+      <h2 class="auth-title">Bienvenido de nuevo</h2>
+      <p class="auth-subtitle">Accedé a tus precios exclusivos y pedidos.</p>
+
+      {% form 'customer_login', id: 'AuthDrawerLoginForm', class: 'auth-form' %}
+        {%- if form.errors -%}
+          <div style="color: var(--color-primary); margin-bottom: 1rem;">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="auth-input-group">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <input type="email" name="customer[email]" class="auth-input" placeholder="Email corporativo" required>
+        </div>
+        
+        <div class="auth-input-group">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <input type="password" name="customer[password]" class="auth-input" placeholder="Contraseña" required>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+          ENTRAR
+        </button>
+      {% endform %}
+    </div>
+
+    <!-- Register View -->
+    <div id="viewRegister" style="display: none;">
+      <h2 class="auth-title">Unite a MDB</h2>
+      <p class="auth-subtitle">Completá tus datos para el alta comercial.</p>
+
+      {% form 'create_customer', id: 'AuthDrawerRegisterForm', class: 'auth-form' %}
+        {%- if form.errors -%}
+          <div style="color: var(--color-primary); margin-bottom: 1rem;">
+            {{ form.errors | default_errors }}
+          </div>
+        {%- endif -%}
+
+        <div class="auth-input-group">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <input type="text" name="customer[first_name]" class="auth-input" placeholder="Nombre completo" required>
+        </div>
+
+        <div class="auth-input-group">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <input type="email" name="customer[email]" class="auth-input" placeholder="Email corporativo" required>
+        </div>
+        
+        <div class="auth-input-group">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <input type="password" name="customer[password]" class="auth-input" placeholder="Contraseña segura" required>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+          REGISTRARSE
+        </button>
+      {% endform %}
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="auth-footer">
+    <p>¿Problemas con tu cuenta?</p>
+    <a href="https://wa.me/541158771523" target="_blank">Contactar Soporte Comercial</a>
+  </div>
+</div>
+
+<script>
+  function openAuthDrawer() {
+    document.getElementById('AuthDrawer').classList.add('is-active');
+    document.getElementById('AuthDrawerBackdrop').classList.add('is-active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeAuthDrawer() {
+    document.getElementById('AuthDrawer').classList.remove('is-active');
+    document.getElementById('AuthDrawerBackdrop').classList.remove('is-active');
+    document.body.style.overflow = '';
+  }
+
+  function toggleAuthTab(tab) {
+    const isLogin = tab === 'login';
+    
+    // Toggle active buttons
+    document.getElementById('tabLogin').classList.toggle('is-active', isLogin);
+    document.getElementById('tabRegister').classList.toggle('is-active', !isLogin);
+    
+    // Toggle views
+    document.getElementById('viewLogin').style.display = isLogin ? 'block' : 'none';
+    document.getElementById('viewRegister').style.display = isLogin ? 'none' : 'block';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Bind triggers global
+    document.querySelectorAll('.js-auth-trigger').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openAuthDrawer();
+      });
+    });
+
+    // Auto-open logic if coming from a failed login native page loop
+    if (window.location.pathname.includes('/account/login') && window.location.search.includes('error=')) {
+        openAuthDrawer();
+    }
+  });
+</script>
