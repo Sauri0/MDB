@@ -1,0 +1,192 @@
+/* Shopify specific reset for the container */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background-image: url('mdb_auth_bg_industrial.png');
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-bg);
+  position: relative;
+}
+
+.auth-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1;
+}
+
+.auth-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 450px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.8);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.auth-header {
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.auth-content {
+  padding: 3rem 2.5rem;
+}
+
+/* Auth Tabs */
+.auth-tabs {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.auth-tab {
+  background: transparent;
+  border: none;
+  color: var(--color-text-dim);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  padding-bottom: 1rem;
+  cursor: pointer;
+  position: relative;
+  letter-spacing: 2px;
+  text-decoration: none;
+  flex: 1;
+  text-align: center;
+}
+
+.auth-tab.activeTab {
+  color: var(--color-text);
+}
+
+.auth-tab.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-primary);
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+  letter-spacing: 1px;
+  color: var(--color-text);
+}
+
+.auth-subtitle {
+  color: var(--color-text-dim);
+  margin-bottom: 2.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.auth-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-group svg {
+  position: absolute;
+  left: 1.2rem;
+  color: var(--color-text-muted);
+}
+
+.auth-input-group input {
+  width: 100%;
+  padding: 1rem 1.2rem 1rem 3.5rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.auth-input-group input:focus {
+  border-color: var(--color-primary);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(204, 0, 0, 0.1);
+}
+
+.auth-submit-btn {
+  margin-top: 1rem;
+  padding: 1.2rem;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.auth-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+  background: #e60000;
+}
+
+.auth-footer {
+  padding: 2.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+}
+
+.auth-footer p {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.auth-footer a {
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.auth-errors {
+  background: rgba(204,0,0,0.1);
+  border: 1px solid var(--color-primary);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+  font-size: 0.9rem;
+}

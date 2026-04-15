@@ -2,10 +2,109 @@
   "layout": "theme",
   "sections": {
     "hero": {
-      "type": "hero"
+      "type": "hero",
+      "settings": {
+        "headline_part1": "MDB INDUSTRIAL",
+        "headline_part2": "RESERVE",
+        "tagline": "DISTRIBUCIÓN MAYORISTA DE BEBIDAS",
+        "button_catalog_label": "VER CATÁLOGO",
+        "catalog_link": "/collections/all",
+        "button_secondary_label": "CONOCER MÁS",
+        "secondary_link": "#beneficios"
+      },
+      "blocks": {
+        "stat_1": {
+          "type": "stat",
+          "settings": {
+            "value": "+500",
+            "label": "Clientes Activos"
+          }
+        },
+        "stat_2": {
+          "type": "stat",
+          "settings": {
+            "value": "+100",
+            "label": "Productos"
+          }
+        },
+        "stat_3": {
+          "type": "stat",
+          "settings": {
+            "value": "24hs",
+            "label": "Entrega Garantizada"
+          }
+        }
+      },
+      "block_order": [
+        "stat_1",
+        "stat_2",
+        "stat_3"
+      ]
     },
     "benefits": {
-      "type": "benefits"
+      "type": "benefits",
+      "settings": {
+        "title_part1": "¿POR QUÉ",
+        "title_part2": "ELEGIRNOS?"
+      },
+      "blocks": {
+        "benefit_1": {
+          "type": "benefit",
+          "settings": {
+            "icon": "dollar",
+            "title": "Precios Imbatibles",
+            "text": "Compramos directo a fábrica y trasladamos el ahorro a vos. Sin intermediarios, sin sorpresas."
+          }
+        },
+        "benefit_2": {
+          "type": "benefit",
+          "settings": {
+            "icon": "truck",
+            "title": "Logística Propia",
+            "text": "Flota propia de camiones para garantizar entregas rápidas y seguras en toda la zona."
+          }
+        },
+        "benefit_3": {
+          "type": "benefit",
+          "settings": {
+            "icon": "users",
+            "title": "Atención Personalizada",
+            "text": "Un asesor dedicado para tu negocio. Te ayudamos a elegir los productos que más venden."
+          }
+        },
+        "benefit_4": {
+          "type": "benefit",
+          "settings": {
+            "icon": "shield",
+            "title": "Calidad Garantizada",
+            "text": "Trabajamos solo con las mejores marcas y controlamos cada producto antes de entregarlo."
+          }
+        },
+        "benefit_5": {
+          "type": "benefit",
+          "settings": {
+            "icon": "clock",
+            "title": "Entregas en 24hs",
+            "text": "Hacé tu pedido hoy y recibilo mañana. Cumplimos con nuestros tiempos de entrega."
+          }
+        },
+        "benefit_6": {
+          "type": "benefit",
+          "settings": {
+            "icon": "package",
+            "title": "Stock Permanente",
+            "text": "Más de 1000 productos siempre disponibles. Nunca te vas a quedar sin mercadería."
+          }
+        }
+      },
+      "block_order": [
+        "benefit_1",
+        "benefit_2",
+        "benefit_3",
+        "benefit_4",
+        "benefit_5",
+        "benefit_6"
+      ]
     }
   },
   "order": [
