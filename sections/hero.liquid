@@ -15,7 +15,7 @@
 
   <!-- Content -->
   <div class="container hero-content">
-    <div class="hero-text-block">
+    <div class="hero-text-block animate-on-scroll" style="animation-delay: 0.2s">
       <div class="hero-title-wrap">
         <h1 class="hero-headline">
           {{ section.settings.headline_part1 }} <span class="hero-headline-accent">{{ section.settings.headline_part2 }}</span>
@@ -36,7 +36,7 @@
     </div>
 
     <!-- Stats -->
-    <div class="hero-stats">
+    <div class="hero-stats animate-on-scroll" style="animation-delay: 0.6s">
       {% for block in section.blocks %}
         <div class="hero-stat-item">
           <span class="hero-stat-value">{{ block.settings.value }}</span>

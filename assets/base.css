@@ -169,3 +169,27 @@ button {
   :root { --space-3xl: 3rem; }
   .container { padding: 0 var(--space-md); }
 }
+
+/* 
+ * NATIVE ANIMATIONS SYSTEM 
+ * Replaces React Framer Motion dependencies 
+ */
+ 
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-on-scroll {
+  opacity: 0; 
+}
+
+.animate-on-scroll.is-visible {
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
