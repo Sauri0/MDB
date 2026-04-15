@@ -1,0 +1,15 @@
+{
+  "layout": "theme",
+  "sections": {
+    "hero": {
+      "type": "hero"
+    },
+    "benefits": {
+      "type": "benefits"
+    }
+  },
+  "order": [
+    "hero",
+    "benefits"
+  ]
+}

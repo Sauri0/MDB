@@ -1,0 +1,183 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0.75rem 0;
+  transition: background var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.header.scrolled {
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+}
+
+.header-logo { display: flex; align-items: center; text-decoration: none; }
+.header-logo-text {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 3px;
+  color: var(--color-text);
+  line-height: 1;
+}
+.header-logo-flame { color: var(--color-primary); }
+
+.header-nav {
+  display: flex;
+  list-style: none;
+  gap: var(--space-xl);
+}
+
+.header-nav-link {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+  position: relative;
+}
+
+.header-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-primary);
+  transition: width var(--transition-normal);
+}
+
+.header-nav-link:hover { color: var(--color-text); }
+.header-nav-link:hover::after { width: 100%; }
+
+.header-actions { display: flex; align-items: center; gap: var(--space-md); }
+
+.header-cart-btn {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.header-cart-btn:hover { background: var(--color-surface-hover); border-color: var(--color-primary); }
+
+.header-cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--color-primary);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-cotizar-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-whatsapp);
+  color: white;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.header-cotizar-btn:hover {
+  background: var(--color-whatsapp-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-green);
+}
+
+.header-login-btn {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+.header-login-btn:hover {
+  color: var(--color-text);
+  border-color: var(--color-primary);
+  background: rgba(204, 0, 0, 0.1);
+}
+
+.header-hamburger {
+  display: none;
+  color: var(--color-text);
+  padding: 4px;
+}
+
+.header-mobile-menu {
+  display: none; /* hidden by default, toggled via js */
+  flex-direction: column;
+  background: rgba(10, 10, 10, 0.98);
+  border-top: 1px solid var(--color-border);
+  overflow: hidden;
+}
+.header-mobile-menu.open { display: flex; }
+
+.header-mobile-link {
+  padding: var(--space-md) var(--space-xl);
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+.header-mobile-link:hover { color: var(--color-text); background: var(--color-surface); }
+
+.header-mobile-cotizar {
+  margin: var(--space-md) var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--color-whatsapp);
+  color: white;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0.8rem;
+  border-radius: var(--radius-md);
+}
+
+@media (max-width: 768px) {
+  .header-nav { display: none; }
+  .header-cotizar-btn { display: none; }
+  .header-hamburger { display: flex; }
+}

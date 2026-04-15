@@ -1,0 +1,105 @@
+{{ 'component-benefits.css' | asset_url | stylesheet_tag }}
+
+<section id="beneficios" class="section benefits">
+  <div class="container">
+    <div class="benefits-header">
+      <h2 class="section-title benefits-title">
+        {{ section.settings.title_part1 }} <span>{{ section.settings.title_part2 }}</span>
+      </h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="benefits-grid">
+      {% for block in section.blocks %}
+        <div class="benefits-card">
+          <div class="benefits-icon-wrap">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              {% case block.settings.icon %}
+                {% when 'dollar' %}
+                  <line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                {% when 'truck' %}
+                  <rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle>
+                {% when 'users' %}
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                {% when 'shield' %}
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                {% when 'clock' %}
+                  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+                {% when 'package' %}
+                  <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
+              {% endcase %}
+            </svg>
+          </div>
+          <h3 class="benefits-card-title">{{ block.settings.title }}</h3>
+          <p class="benefits-card-desc">{{ block.settings.text }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Benefits Grid",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title_part1",
+      "label": "Título Principal (Normal)",
+      "default": "¿POR QUÉ"
+    },
+    {
+      "type": "text",
+      "id": "title_part2",
+      "label": "Título Principal (Acento/Rojo)",
+      "default": "ELEGIRNOS?"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Beneficio",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icono Lucide",
+          "options": [
+            { "value": "dollar", "label": "Precio" },
+            { "value": "truck", "label": "Logística (Camión)" },
+            { "value": "users", "label": "Usuarios / Atención" },
+            { "value": "shield", "label": "Escudo / Calidad" },
+            { "value": "clock", "label": "Reloj / Entregas" },
+            { "value": "package", "label": "Caja / Stock" }
+          ],
+          "default": "dollar"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Título del Beneficio"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Descripción"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grilla de Beneficios",
+      "blocks": [
+        { "type": "benefit", "settings": { "icon": "dollar", "title": "Precios Imbatibles", "text": "Compramos directo a fábrica y trasladamos el ahorro a vos." } },
+        { "type": "benefit", "settings": { "icon": "truck", "title": "Logística Propia", "text": "Flota propia de camiones para garantizar entregas rápidas." } },
+        { "type": "benefit", "settings": { "icon": "users", "title": "Atención Personalizada", "text": "Un asesor dedicado para tu negocio." } },
+        { "type": "benefit", "settings": { "icon": "shield", "title": "Calidad Garantizada", "text": "Trabajamos solo con las mejores marcas." } },
+        { "type": "benefit", "settings": { "icon": "clock", "title": "Entregas en 24hs", "text": "Hacé tu pedido hoy y recibilo mañana." } },
+        { "type": "benefit", "settings": { "icon": "package", "title": "Stock Permanente", "text": "Más de 1000 productos siempre disponibles." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
