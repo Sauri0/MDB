@@ -25,7 +25,6 @@ class CatalogAJAX {
           e.preventDefault();
           this.updateCatalog(link.getAttribute('href'));
           
-          // Close drawer on mobile after clicking
           if (this.filterDrawer) {
             this.filterDrawer.classList.remove('active');
             document.body.classList.remove('overflow-hidden');
@@ -34,7 +33,6 @@ class CatalogAJAX {
       });
     }
 
-    // Filter Drawer (Mobile Logic)
     document.addEventListener('click', (e) => {
       if (e.target.closest('.js-open-filters')) {
         this.filterDrawer && this.filterDrawer.classList.add('active');
@@ -52,11 +50,10 @@ class CatalogAJAX {
   }
 
   initQuickView() {
-    // Global delegation for Quick View buttons
     document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.js-qv-open-btn, .btn-quick-view');
+      const btn = e.target.closest('.js-qv-open-btn, .btn-quick-view, .product-image-container');
       const card = e.target.closest('.js-qv-card');
-      if (!card || (!btn && !e.target.closest('.product-image-container'))) return;
+      if (!card || !btn) return;
       
       e.preventDefault();
       try {
@@ -82,7 +79,6 @@ class CatalogAJAX {
       return;
     }
 
-    // 1. UI Phase: Start Loading & GSAP Out
     this.container.classList.add('loading--active');
     
     const items = this.grid.querySelectorAll('.product-grid-item');
@@ -110,39 +106,39 @@ class CatalogAJAX {
       const newSidebar = doc.querySelector('.collection-sidebar');
       
       if (newGrid) {
-        // 2. DOM Phase: Update Content
         setTimeout(() => {
           this.grid.innerHTML = newGrid.innerHTML;
-          if (this.sidebar && newSidebar) {
-             // Optional: update sidebar if nested links change
-             this.sidebar.innerHTML = newSidebar.innerHTML;
-          }
+          if (this.sidebar && newSidebar) this.sidebar.innerHTML = newSidebar.innerHTML;
           
-          // Re-trigger scroll reveal for new items if not handled by GSAP
-          
-          // 3. GSAP In Phase
           const newItems = this.grid.querySelectorAll('.product-grid-item');
-          gsap.fromTo(newItems, 
-            { opacity: 0, y: 30 },
-            { 
-              opacity: 1, 
-              y: 0, 
-              stagger: 0.04, 
-              duration: 0.6, 
-              ease: "power3.out",
-              clearProps: "all"
-            }
-          );
+          if (newItems.length > 0) {
+            gsap.fromTo(newItems, 
+              { opacity: 0, y: 30 },
+              { 
+                opacity: 1, 
+                y: 0, 
+                stagger: 0.04, 
+                duration: 0.6, 
+                ease: "power3.out",
+                clearProps: "all",
+                onComplete: () => {
+                   newItems.forEach(item => {
+                     item.style.opacity = "1";
+                     item.style.transform = "none";
+                   });
+                }
+              }
+            );
+          }
 
           if (updateHistory) history.pushState({ url }, '', url);
           this.updateActiveLinks(url);
           
-          // Scroll fix
           const rect = this.container.getBoundingClientRect();
           if (rect.top < 0) {
             window.scrollTo({ top: window.scrollY + rect.top - 100, behavior: 'smooth' });
           }
-        }, 350); // Wait for transition out
+        }, 350);
       } else {
         window.location.href = url;
       }
