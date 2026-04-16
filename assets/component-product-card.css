@@ -121,8 +121,13 @@
   transition: all 0.2s ease;
 }
 
+.btn-whatsapp-buy {
+  background: var(--color-whatsapp);
+  color: white;
+}
+
 .btn-quick-view:hover { background: #eee; transform: scale(1.1); }
-.btn-whatsapp-buy:hover { background: var(--color-whatsapp); color: white; }
+.btn-whatsapp-buy:hover { background: var(--color-whatsapp-hover); transform: scale(1.1); }
 
 /* Product Info */
 .product-info {

@@ -393,14 +393,3 @@
     display: none; /* Hide arrows on small mobile to avoid blocking cards */
   }
 }
-
-.swiper-pagination-bullet {
-  background: var(--color-text-dim) !important;
-  opacity: 1 !important;
-}
-
-.swiper-pagination-bullet-active {
-  background: var(--color-primary) !important;
-  width: 24px !important;
-  border-radius: 4px !important;
-}
