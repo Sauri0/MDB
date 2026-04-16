@@ -38,7 +38,9 @@
           {%- paginate collection.products by 40 -%}
             {%- if collection.products_count > 0 -%}
               {%- for product in collection.products -%}
-                {% render 'product-card', product: product, show_vendor: true %}
+                <div class="product-grid-item">
+                  {% render 'product-card', product: product, show_vendor: true %}
+                </div>
               {%- endfor -%}
             {%- else -%}
               <div class="collection-empty">
@@ -105,25 +107,37 @@
 }
 .filter-list a:hover, .filter-list a.active { color: var(--color-text); padding-left: 5px; }
 
-.collection-grid {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  transition: opacity 0.3s ease;
-}
-
-@media (min-width: 768px) {
-  .collection-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+  /* FORCE 5 COLUMNS AND GRID BEHAVIOR */
+  #ProductGrid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px !important;
+    width: 100% !important;
   }
-}
 
-@media (min-width: 1200px) {
-  .collection-grid {
-    grid-template-columns: repeat(4, 1fr);
+  @media (min-width: 768px) {
+    #ProductGrid {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
   }
-}
+
+  @media (min-width: 1200px) {
+    #ProductGrid {
+      grid-template-columns: repeat(4, 1fr) !important;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    #ProductGrid {
+      grid-template-columns: repeat(5, 1fr) !important;
+    }
+  }
+
+  /* Compact Card Adjustments */
+  .product-grid-item {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
 
 @media (min-width: 1440px) {
   .collection-grid {
