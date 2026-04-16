@@ -1,10 +1,3 @@
-{%- liquid
-  assign products_to_show = collection.products
-  if collection.handle == 'all' and products_to_show.size == 0
-    assign products_to_show = collections['all'].products
-  endif
--%}
-
 <section id="catalogo-completo" class="section collection-main" data-section-id="{{ section.id }}">
   <!-- Mobile Filter Opener -->
   <div class="mobile-filters-bar container">
@@ -31,7 +24,7 @@
             <h3 class="filter-title">BEBIDAS</h3>
             <ul class="filter-list">
               <li>
-                <a href="/collections/all" class="{% if collection.handle == 'all' %}active{% endif %}">
+                <a href="/collections/all" class="{% if collection.handle == 'all' or collection.handle == blank %}active{% endif %}">
                   <span>Todos los productos</span>
                   <span class="count">{{ shop.products_count }}</span>
                 </a>
@@ -51,7 +44,7 @@
           <div class="filter-group industrial-banner">
             <h3 class="filter-title">SOPORTE B2B</h3>
             <p>Atención directa por WhatsApp para pedidos de gran volumen.</p>
-            <a href="https://wa.me/yournumber" class="btn-sidebar-wa">
+            <a href="https://wa.me/5491100000000" class="btn-sidebar-wa">
               HABLAR CON ASESOR
             </a>
           </div>
@@ -61,9 +54,17 @@
       <!-- Grid Wrap -->
       <div class="collection-grid-wrap" id="CollectionSection">
         <div class="collection-grid" id="ProductGrid">
-          {%- paginate products_to_show by 40 -%}
-            {%- if products_to_show.size > 0 -%}
-              {%- for product in products_to_show -%}
+          {%- comment -%}
+            FIX: Use collection or collections.all if we are at the root
+          {%- endcomment -%}
+          {%- assign target_collection = collection -%}
+          {%- if collection.handle == 'all' and collection.products_count == 0 -%}
+             {%- assign target_collection = collections['all'] -%}
+          {%- endif -%}
+
+          {%- paginate target_collection.products by 40 -%}
+            {%- if target_collection.products.size > 0 -%}
+              {%- for product in target_collection.products -%}
                 <div class="product-grid-item">
                   {% render 'product-card', product: product, show_vendor: true %}
                 </div>
@@ -133,29 +134,144 @@
   letter-spacing: 2px;
   display: flex;
   align-items: center;
-  justify-content: center; gap: 10px; border-radius: var(--radius-md); }
-.collection-layout { display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
-.sidebar-inner { position: sticky; top: 120px; background: #111; border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-lg); padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--radius-md);
+}
+
+.collection-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
+}
+
+/* Sidebar Styles */
+.sidebar-inner {
+  position: sticky;
+  top: 120px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
 .filter-group { margin-bottom: 40px; }
-.filter-title { font-family: var(--font-heading); font-size: 0.75rem; letter-spacing: 3px; color: var(--color-primary); margin-bottom: 25px; text-transform: uppercase; border-left: 2px solid var(--color-primary); padding-left: 15px; }
+.filter-title {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  color: var(--color-primary);
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  border-left: 2px solid var(--color-primary);
+  padding-left: 15px;
+}
+
 .filter-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
-.filter-list a { display: flex; justify-content: space-between; align-items: center; color: rgba(255,255,255,0.5); font-size: 0.9rem; padding: 10px 12px; border-radius: 4px; transition: all 0.3s ease; text-decoration: none; }
-.filter-list a:hover { background: rgba(255, 255, 255, 0.03); color: white; padding-left: 18px; }
-.filter-list a.active { background: rgba(204, 0, 0, 0.1); color: var(--color-primary); font-weight: 600; border-right: 2px solid var(--color-primary); }
-.industrial-banner { background: rgba(204,0,0,0.05); border: 1px dashed rgba(204,0,0,0.3); padding: 20px; border-radius: 8px; }
+.filter-list a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.9rem;
+  padding: 10px 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+.filter-list a:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: white;
+  padding-left: 18px;
+}
+.filter-list a.active {
+  background: rgba(204, 0, 0, 0.1);
+  color: var(--color-primary);
+  font-weight: 600;
+  border-right: 2px solid var(--color-primary);
+}
+
+.industrial-banner {
+  background: rgba(204,0,0,0.05);
+  border: 1px dashed rgba(204,0,0,0.3);
+  padding: 20px;
+  border-radius: 8px;
+}
 .industrial-banner p { font-size: 0.8rem; color: rgba(255,255,255,0.4); line-height: 1.5; margin-bottom: 15px; }
-.btn-sidebar-wa { display: block; text-align: center; background: var(--color-primary); color: white; padding: 10px; font-size: 0.7rem; font-family: var(--font-heading); letter-spacing: 1px; border-radius: 4px; }
-#ProductGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.btn-sidebar-wa {
+  display: block;
+  text-align: center;
+  background: var(--color-primary);
+  color: white;
+  padding: 10px;
+  font-size: 0.7rem;
+  font-family: var(--font-heading);
+  letter-spacing: 1px;
+  border-radius: 4px;
+}
+
+/* Grid Override (5 Columns) */
+#ProductGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
 @media (min-width: 768px) { #ProductGrid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1200px) { #ProductGrid { grid-template-columns: repeat(4, 1fr); } }
 @media (min-width: 1440px) { #ProductGrid { grid-template-columns: repeat(5, 1fr); } }
-.filter-drawer { position: fixed; inset: 0; z-index: 5000; visibility: hidden; transition: all 0.4s ease; }
+
+/* Drawer Styles */
+.filter-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  visibility: hidden;
+  transition: all 0.4s ease;
+}
 .filter-drawer.active { visibility: visible; }
-.filter-drawer-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.4s ease; }
+.filter-drawer-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
 .filter-drawer.active .filter-drawer-overlay { opacity: 1; }
-.filter-drawer-content { position: absolute; top: 0; right: -100%; width: 85%; height: 100%; background: #111; padding: 30px; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.filter-drawer-content {
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  height: 100%;
+  background: #111;
+  padding: 30px;
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
 .filter-drawer.active .filter-drawer-content { right: 0; }
-.catalog-loading-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 100; display: flex; align-items: center; justify-content: center; }
+
+/* Loading Overlay */
+.catalog-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .loading--active .catalog-loading-overlay { opacity: 1; pointer-events: auto; }
-@media (max-width: 1024px) { .collection-layout { grid-template-columns: 1fr; } .collection-sidebar { display: none; } .mobile-filters-bar { display: block; } }
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .collection-layout { grid-template-columns: 1fr; }
+  .collection-sidebar { display: none; }
+  .mobile-filters-bar { display: block; }
+}
 </style>
