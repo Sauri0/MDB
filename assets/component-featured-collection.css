@@ -340,11 +340,21 @@
   z-index: 20;
 }
 
+.swiper-pagination-bullet {
+  background: var(--color-text-dim) !important;
+  opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+  background: var(--color-primary) !important;
+  opacity: 1;
+}
+
 .slider-nav {
   position: absolute;
   top: 50%;
-  left: -40px;
-  right: -40px;
+  left: -20px;
+  right: -20px;
   transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
