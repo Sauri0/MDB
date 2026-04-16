@@ -16,7 +16,7 @@
     </div>
 
     <!-- Products Slider -->
-    <div class="swiper product-slider animate-on-scroll">
+    <div class="swiper product-slider">
       <div class="swiper-wrapper">
         {%- liquid
           assign target_collection = section.settings.collection
@@ -60,9 +60,9 @@
     </div>
 
     <!-- Navigation (Moved Outside Mask) -->
-    <div class="slider-nav">
+    <div class="slider-nav" style="z-index: 100;">
       <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next" style="right: -40px;"></div>
+      <div class="swiper-button-next"></div>
     </div>
   </div>
 </section>

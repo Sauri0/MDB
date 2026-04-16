@@ -71,7 +71,7 @@
     });
 
     // 2. Title & Tagline Reveal (Delay 0.2)
-    tl.to('.hero-title-wrap', {
+    tl.to('.hero-headline, .hero-banner-bar', {
       opacity: 1,
       y: 0,
       duration: 0.8,
@@ -95,7 +95,7 @@
     }, 0.7);
 
     // 5. Scroll Indicator Loop
-    gsap.to('.hero-scrollIndicator', {
+    gsap.to('.hero-scroll-indicator', {
       y: 8,
       duration: 0.9,
       repeat: -1,

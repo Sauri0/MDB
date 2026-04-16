@@ -1,0 +1,157 @@
+<section id="mdb-reviews" class="section reviews-vertical-section">
+  <div class="container reviews-container">
+    <div class="reviews-header animate-on-scroll">
+      <h2 class="section-title">LO QUE DICEN <span>NUESTROS CLIENTES</span></h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="reviews-scroller-wrap animate-on-scroll">
+      <div class="reviews-track">
+        {%- liquid
+          assign reviews = shop.metaobjects.review.values
+          if reviews.size == 0
+            # Mock data if no metaobjects yet
+            assign mock_reviews = "Juan B. (Bar Central),MDB es nuestro aliado estratégico. Precios reales.,5|Sofía L. (Vinoteca SM),La mejor logística de la zona. Nunca fallan.,5|MDB Distribuciones,Calidad premium en cada botella.,5" | split: "|"
+          endif
+        -%}
+
+        {%- if reviews.size > 0 -%}
+          {%- for review in reviews -%}
+            <div class="review-card">
+              <div class="review-stars">
+                {% for i in (1..review.calificacion) %}★{% endfor %}
+              </div>
+              <p class="review-text">"{{ review.comentario }}"</p>
+              <div class="review-meta">
+                <span class="review-author">{{ review.autor }}</span>
+                <span class="review-verified">✓ Compra Verificada</span>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          {%- for mock in mock_reviews -%}
+            {%- assign parts = mock | split: "," -%}
+            <div class="review-card">
+              <div class="review-stars">★★★★★</div>
+              <p class="review-text">"{{ parts[1] }}"</p>
+              <div class="review-meta">
+                <span class="review-author">{{ parts[0] }}</span>
+                <span class="review-verified">✓ Socio Estratégico</span>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+        
+        <!-- Duplicate for Infinite Loop -->
+        {%- if reviews.size > 0 -%}
+          {%- for review in reviews -%}
+            <div class="review-card" aria-hidden="true">
+              <div class="review-stars">
+                {% for i in (1..review.calificacion) %}★{% endfor %}
+              </div>
+              <p class="review-text">"{{ review.comentario }}"</p>
+              <div class="review-meta">
+                <span class="review-author">{{ review.autor }}</span>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.reviews-vertical-section {
+  padding: 80px 0;
+  background: #050505;
+  overflow: hidden;
+}
+
+.reviews-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reviews-scroller-wrap {
+  height: 400px;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  margin-top: 40px;
+}
+
+.reviews-track {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  animation: scrollVertical 20s linear infinite;
+}
+
+.reviews-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scrollVertical {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.review-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 30px;
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.review-stars {
+  color: var(--color-primary);
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.review-text {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--color-text);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.review-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.review-author {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  color: var(--color-primary);
+  letter-spacing: 1px;
+}
+
+.review-verified {
+  font-size: 0.7rem;
+  color: #25D366;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+</style>
+
+{% schema %}
+{
+  "name": "Reseñas Verticales",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Reseñas Verticales"
+    }
+  ]
+}
+{% endschema %}
