@@ -235,10 +235,9 @@
     width: 100%;
     align-items: center;
   }
-  .hero-btn-whatsapp, .hero-btn-catalog {
+  .hero-btn-primary, .hero-btn-secondary {
     width: 100%;
     justify-content: center;
   }
   .hero-headline { font-size: clamp(2.5rem, 10vw, 4rem); letter-spacing: 2px; }
-  .hero-tagline { font-size: 0.75rem; padding: 0.5rem 1rem; }
 }
