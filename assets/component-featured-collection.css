@@ -353,8 +353,8 @@
 .slider-nav {
   position: absolute;
   top: 50%;
-  left: -20px;
-  right: -20px;
+  left: 30px;
+  right: 30px;
   transform: translateY(-50%);
   display: flex;
   justify-content: space-between;
@@ -393,8 +393,8 @@
 
 @media (max-width: 1300px) {
   .slider-nav {
-    left: 10px;
-    right: 10px;
+    left: 20px;
+    right: 20px;
   }
 }
 
