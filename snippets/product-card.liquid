@@ -22,7 +22,7 @@
   data-description="{{ product.description | strip_html | truncate: 200 | escape }}"
   data-image="{{ product.featured_image | img_url: '800x800' }}"
   data-presentation="{{ product.metafields.custom.presentation | escape }}"
-  data-category="{{ product.tags | join: ',' | split: ',' | first | strip | escape }}"
+  data-category="{{ product.type | default: 'MDB Industrial' | escape }}"
   data-bulk='{{ bulk_pricing | json }}'
 >
   {%- if product.compare_at_price > product.price -%}

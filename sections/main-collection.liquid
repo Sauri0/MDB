@@ -1,7 +1,15 @@
 <section id="catalogo-completo" class="section collection-main" data-section-id="{{ section.id }}">
+  <!-- Mobile Filter Opener -->
+  <div class="mobile-filters-bar container">
+    <button class="btn-filters-open js-open-filters">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+      FILTRAR POR CATEGORÍA
+    </button>
+  </div>
+
   <div class="container">
     <header class="collection-header animate-on-scroll">
-      <h1 class="section-title">TODOS LOS <span>PRODUCTOS</span></h1>
+      <h1 class="section-title">NUESTRO <span>CATÁLOGO</span></h1>
       <div class="divider"></div>
       {%- if collection.description != blank -%}
         <div class="collection-description">{{ collection.description }}</div>
@@ -9,30 +17,41 @@
     </header>
 
     <div class="collection-layout">
-      <!-- Desktop Filters Sidebar -->
-      <aside class="collection-sidebar animate-on-scroll">
-        <div class="filter-group">
-          <h3 class="filter-title">CATEGORÍAS</h3>
-          <ul class="filter-list">
-            <li><a href="/collections/all" class="{% if collection.handle == 'all' %}active{% endif %}">Todos los productos</a></li>
-            {%- for product_type in shop.types -%}
-              {%- if product_type != blank -%}
-                <li><a href="{{ product_type | url_for_type }}" class="{% if collection.current_type == product_type %}active{% endif %}">{{ product_type }}</a></li>
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
-        </div>
+      <!-- Desktop Sidebar -->
+      <aside class="collection-sidebar">
+        <div class="sidebar-inner animate-on-scroll">
+          <div class="filter-group">
+            <h3 class="filter-title">BEBIDAS</h3>
+            <ul class="filter-list">
+              <li>
+                <a href="/collections/all" class="{% if collection.handle == 'all' %}active{% endif %}">
+                  <span>Todos los productos</span>
+                  <span class="count">{{ shop.products_count }}</span>
+                </a>
+              </li>
+              {%- for product_type in shop.types -%}
+                {%- if product_type != blank -%}
+                  <li>
+                    <a href="{{ product_type | url_for_type }}" class="{% if collection.current_type == product_type %}active{% endif %}">
+                      <span>{{ product_type }}</span>
+                    </a>
+                  </li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </div>
 
-        <div class="filter-group">
-          <h3 class="filter-title">DISPONIBILIDAD</h3>
-          <div class="filter-checkbox">
-            <input type="checkbox" id="in-stock" checked disabled>
-            <label for="in-stock">En Stock</label>
+          <div class="filter-group industrial-banner">
+            <h3 class="filter-title">SOPORTE B2B</h3>
+            <p>Atención directa por WhatsApp para pedidos de gran volumen.</p>
+            <a href="https://wa.me/yournumber" class="btn-sidebar-wa">
+              HABLAR CON ASESOR
+            </a>
           </div>
         </div>
       </aside>
 
-      <!-- Products Grid -->
+      <!-- Grid Wrap -->
       <div class="collection-grid-wrap" id="CollectionSection">
         <div class="collection-grid" id="ProductGrid">
           {%- paginate collection.products by 40 -%}
@@ -52,7 +71,7 @@
 
             {%- if paginate.pages > 1 -%}
               <div class="pagination">
-                {{ paginate | default_pagination }}
+                {{ paginate | default_pagination: next: '>', previous: '<' }}
               </div>
             {%- endif -%}
           {%- endpaginate -%}
@@ -64,123 +83,191 @@
       </div>
     </div>
   </div>
+
+  <!-- Mobile Filter Drawer -->
+  <div id="FilterDrawer" class="filter-drawer">
+    <div class="filter-drawer-overlay"></div>
+    <div class="filter-drawer-content">
+      <div class="filter-drawer-header">
+        <h3>FILTROS</h3>
+        <button class="js-close-filters">&times;</button>
+      </div>
+      <div class="filter-drawer-body">
+        <div class="filter-group">
+          <h3 class="filter-title">CATEGORÍAS</h3>
+          <ul class="filter-list">
+             <li><a href="/collections/all" class="{% if collection.handle == 'all' %}active{% endif %}">Todos los productos</a></li>
+             {%- for product_type in shop.types -%}
+               {%- if product_type != blank -%}
+                 <li><a href="{{ product_type | url_for_type }}" class="{% if collection.current_type == product_type %}active{% endif %}">{{ product_type }}</a></li>
+               {%- endif -%}
+             {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <style>
-.collection-main { padding: 120px 0 80px; }
+.collection-main { padding: 120px 0 80px; background: #080808; }
 .collection-header { text-align: center; margin-bottom: 60px; }
-.collection-description { color: var(--color-text-muted); max-width: 600px; margin: 20px auto 0; font-size: 0.95rem; line-height: 1.6; }
+
+/* Mobile Bar */
+.mobile-filters-bar { display: none; margin-bottom: 20px; }
+.btn-filters-open {
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: white;
+  padding: 15px;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--radius-md);
+}
 
 .collection-layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 30px;
+  grid-template-columns: 280px 1fr;
+  gap: 40px;
 }
 
-.collection-sidebar {
+/* Sidebar Styles */
+.sidebar-inner {
   position: sticky;
-  top: 100px;
-  height: fit-content;
-  background: var(--color-surface);
+  top: 120px;
+  background: #111;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.filter-group { margin-bottom: 30px; }
-.filter-group:last-child { margin-bottom: 0; }
+.filter-group { margin-bottom: 40px; }
 .filter-title {
   font-family: var(--font-heading);
-  font-size: 0.85rem;
-  letter-spacing: 2px;
+  font-size: 0.75rem;
+  letter-spacing: 3px;
   color: var(--color-primary);
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   text-transform: uppercase;
+  border-left: 2px solid var(--color-primary);
+  padding-left: 15px;
 }
 
-.filter-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.filter-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
 .filter-list a {
-  color: var(--color-text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-text-dim);
   font-size: 0.9rem;
-  transition: all 0.3s ease;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
-.filter-list a:hover, .filter-list a.active { color: var(--color-text); padding-left: 5px; }
-
-  /* FORCE 5 COLUMNS AND GRID BEHAVIOR */
-  #ProductGrid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 15px !important;
-    width: 100% !important;
-  }
-
-  @media (min-width: 768px) {
-    #ProductGrid {
-      grid-template-columns: repeat(3, 1fr) !important;
-    }
-  }
-
-  @media (min-width: 1200px) {
-    #ProductGrid {
-      grid-template-columns: repeat(4, 1fr) !important;
-    }
-  }
-
-  @media (min-width: 1280px) {
-    #ProductGrid {
-      grid-template-columns: repeat(5, 1fr) !important;
-    }
-  }
-
-  /* Compact Card Adjustments */
-  .product-grid-item {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-
-@media (min-width: 1440px) {
-  .collection-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
+.filter-list a:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: white;
+  padding-left: 18px;
+}
+.filter-list a.active {
+  background: rgba(204, 0, 0, 0.1);
+  color: var(--color-primary);
+  font-weight: 600;
+  border-right: 2px solid var(--color-primary);
 }
 
-.collection-grid-wrap { position: relative; }
+.industrial-banner {
+  background: rgba(204,0,0,0.05);
+  border: 1px dashed rgba(204,0,0,0.3);
+  padding: 20px;
+  border-radius: var(--radius-md);
+}
+.industrial-banner p { font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.5; margin-bottom: 15px; }
+.btn-sidebar-wa {
+  display: block;
+  text-align: center;
+  background: var(--color-primary);
+  color: white;
+  padding: 10px;
+  font-size: 0.7rem;
+  font-family: var(--font-heading);
+  letter-spacing: 1px;
+  border-radius: var(--radius-sm);
+}
+
+/* Grid Override (5 Columns) */
+#ProductGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+@media (min-width: 768px) { #ProductGrid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1200px) { #ProductGrid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 1440px) { #ProductGrid { grid-template-columns: repeat(5, 1fr); } }
+
+/* Drawer Styles */
+.filter-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  visibility: hidden;
+  transition: all 0.4s ease;
+}
+.filter-drawer.active { visibility: visible; }
+.filter-drawer-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.filter-drawer.active .filter-drawer-overlay { opacity: 1; }
+.filter-drawer-content {
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  height: 100%;
+  background: #111;
+  padding: 30px;
+  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.filter-drawer.active .filter-drawer-content { right: 0; }
+
+.filter-drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+.filter-drawer-header h3 { font-family: var(--font-heading); letter-spacing: 2px; }
+.js-close-filters { background: none; border: none; color: white; font-size: 2rem; cursor: pointer; }
+
+/* Loading Overlay */
 .catalog-loading-overlay {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  backdrop-filter: blur(3px);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .loading--active .catalog-loading-overlay { opacity: 1; pointer-events: auto; }
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  border-top-color: var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
 
-.collection-empty {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 100px 0;
-  border: 1px dashed var(--color-border);
-  border-radius: var(--radius-lg);
-}
-.empty-emoji { font-size: 3rem; display: block; margin-bottom: 20px; }
-
+/* Responsive adjustments */
 @media (max-width: 1024px) {
   .collection-layout { grid-template-columns: 1fr; }
-  .collection-sidebar { display: none; } /* Mobile filters hidden for now or using modal */
+  .collection-sidebar { display: none; }
+  .mobile-filters-bar { display: block; }
 }
 </style>
