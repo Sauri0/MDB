@@ -1,6 +1,6 @@
 /**
- * MDB — AJAX Catalog Filters
- * Handles real-time filtering without page reloads using Shopify's Section Rendering API.
+ * MDB — AJAX Catalog Filters (Premium Version)
+ * Handles real-time filtering with robust section targeting and error handling.
  */
 class CatalogAJAX {
   constructor() {
@@ -10,11 +10,14 @@ class CatalogAJAX {
     
     if (!this.container || !this.sidebar) return;
     
+    // Find the closest section ID to avoid targeting Hero or Header
+    const sectionElement = this.container.closest('[data-section-id]');
+    this.sectionId = sectionElement ? sectionElement.getAttribute('data-section-id') : null;
+    
     this.init();
   }
 
   init() {
-    // Intercept clicks on category links in the sidebar
     this.sidebar.addEventListener('click', (e) => {
       const link = e.target.closest('.filter-list a');
       if (link) {
@@ -24,46 +27,60 @@ class CatalogAJAX {
       }
     });
 
-    // Handle browser back/forward buttons
     window.addEventListener('popstate', (e) => {
       this.updateCatalog(window.location.href, false);
     });
   }
 
   async updateCatalog(url, updateHistory = true) {
+    if (!this.sectionId) {
+      console.warn('MDB: No section ID found for AJAX filtering. Falling back to full reload.');
+      window.location.href = url;
+      return;
+    }
+
     this.container.classList.add('loading--active');
     
-    // Construct the URL for Section Rendering API
-    // We append the section_id of the main-collection
-    const sectionId = document.querySelector('[data-section-id]').getAttribute('data-section-id');
-    const ajaxUrl = `${url}${url.includes('?') ? '&' : '?'}section_id=${sectionId}`;
+    const ajaxUrl = `${url}${url.includes('?') ? '&' : '?'}section_id=${this.sectionId}`;
 
     try {
       const response = await fetch(ajaxUrl);
-      const html = await response.text();
+      if (!response.ok) throw new Error('Network response was not ok');
       
+      const html = await response.text();
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, 'text/html');
       
-      // Extract the new grid content
-      const newGridContent = doc.querySelector('#ProductGrid').innerHTML;
+      const newGrid = doc.querySelector('#ProductGrid');
       
-      // Update the DOM
-      this.grid.innerHTML = newGridContent;
-      
-      // Update History
-      if (updateHistory) {
-        history.pushState({ url }, '', url);
+      if (newGrid) {
+        // Update Grid Content
+        this.grid.innerHTML = newGrid.innerHTML;
+        
+        // Update URL
+        if (updateHistory) {
+          history.pushState({ url }, '', url);
+        }
+
+        // Update Active Links
+        this.updateActiveLinks(url);
+
+        // Smart Scroll: only scroll if the top of the container is above the current view
+        const rect = this.container.getBoundingClientRect();
+        if (rect.top < 0) {
+          window.scrollTo({
+            top: window.scrollY + rect.top - 100, // Offset for fixed header
+            behavior: 'smooth'
+          });
+        }
+      } else {
+        console.warn('MDB: #ProductGrid not found in the AJAX response. Section ID might be incorrect.');
+        // If we can't find the grid in AJAX, let's just go to the URL directly as fallback
+        window.location.href = url;
       }
-
-      // Update Active State in Sidebar
-      this.updateActiveLinks(url);
-
-      // Scroll to top of grid
-      this.container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
     } catch (error) {
-      console.error('MDB Catalog Error:', error);
+      console.error('MDB Catalog AJAX Error:', error);
+      window.location.href = url; // Hard fallback on error
     } finally {
       this.container.classList.remove('loading--active');
     }
@@ -71,11 +88,15 @@ class CatalogAJAX {
 
   updateActiveLinks(currentUrl) {
     const links = this.sidebar.querySelectorAll('.filter-list a');
+    const currentPath = new URL(currentUrl, window.location.origin).pathname;
+    const currentSearch = new URL(currentUrl, window.location.origin).search;
+
     links.forEach(link => {
-      const linkUrl = new URL(link.href, window.location.origin).pathname;
-      const currentPath = new URL(currentUrl, window.location.origin).pathname;
+      const linkParsed = new URL(link.href, window.location.origin);
+      const isSamePath = linkParsed.pathname === currentPath;
+      const isSameSearch = linkParsed.search === currentSearch;
       
-      if (linkUrl === currentPath) {
+      if (isSamePath && (currentSearch === '' || isSameSearch)) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');
