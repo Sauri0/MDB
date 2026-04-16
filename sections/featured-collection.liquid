@@ -16,25 +16,31 @@
     <!-- Products Slider -->
     <div class="swiper product-slider animate-on-scroll">
       <div class="swiper-wrapper">
-        {%- if section.settings.collection != blank -%}
-          {%- for product in section.settings.collection.products limit: section.settings.limit -%}
+        {%- liquid
+          assign target_collection = section.settings.collection
+          if target_collection == blank
+            assign target_collection = collections['catalogo']
+          endif
+        -%}
+
+        {%- if target_collection != blank and target_collection.products_count > 0 -%}
+          {%- for product in target_collection.products limit: section.settings.limit -%}
             <div class="swiper-slide">
               {% render 'product-card', product: product, show_vendor: true %}
             </div>
           {%- endfor -%}
         {%- else -%}
-          <!-- Mockups if no collection selected -->
+          <!-- Mockups if absolutely no products found -->
           {%- for i in (1..section.settings.limit) -%}
             <div class="swiper-slide">
               <div class="product-card">
-                <span class="product-badge badge-premium">EJEMPLO</span>
+                <span class="product-badge badge-premium">PRÓXIMAMENTE</span>
                 <div class="product-image-wrap">
-                  <div class="product-image-placeholder">🍷</div>
+                  <div class="product-image-placeholder">🏷️</div>
                 </div>
                 <div class="product-info">
-                  <span class="product-vendor uppercase">BODEGA MDB</span>
-                  <span class="product-title">Vino Malbec Reserva</span>
-                  <span class="product-price-logged-out">Ingresá para ver precio</span>
+                  <span class="product-vendor uppercase">MDB INDUSTRIAL</span>
+                  <span class="product-title">Producto en Carga</span>
                 </div>
               </div>
             </div>
