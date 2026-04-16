@@ -13,34 +13,67 @@
       </p>
     </div>
 
-    <!-- Products Grid -->
-    <div class="catalog-grid">
-      {%- if section.settings.collection != blank -%}
-        {%- for product in section.settings.collection.products limit: section.settings.limit -%}
-          {% render 'product-card', product: product, show_vendor: true %}
-        {%- endfor -%}
-      {%- else -%}
-        <!-- Mockups if no collection selected -->
-        {%- for i in (1..section.settings.limit) -%}
-          <div class="product-card animate-on-scroll" style="animation-delay: {{ forloop.index | times: 0.1 }}s">
-            <span class="product-badge badge-premium">EJEMPLO</span>
-            <div class="product-image-wrap">
-              <div class="product-image-placeholder">🍷</div>
+    <!-- Products Slider -->
+    <div class="swiper product-slider animate-on-scroll">
+      <div class="swiper-wrapper">
+        {%- if section.settings.collection != blank -%}
+          {%- for product in section.settings.collection.products limit: section.settings.limit -%}
+            <div class="swiper-slide">
+              {% render 'product-card', product: product, show_vendor: true %}
             </div>
-            <div class="product-info">
-              <span class="product-vendor uppercase">BODEGA MDB</span>
-              <span class="product-title">Vino Malbec Reserva</span>
-              <span class="product-price-logged-out">Ingresá para ver precio</span>
+          {%- endfor -%}
+        {%- else -%}
+          <!-- Mockups if no collection selected -->
+          {%- for i in (1..section.settings.limit) -%}
+            <div class="swiper-slide">
+              <div class="product-card">
+                <span class="product-badge badge-premium">EJEMPLO</span>
+                <div class="product-image-wrap">
+                  <div class="product-image-placeholder">🍷</div>
+                </div>
+                <div class="product-info">
+                  <span class="product-vendor uppercase">BODEGA MDB</span>
+                  <span class="product-title">Vino Malbec Reserva</span>
+                  <span class="product-price-logged-out">Ingresá para ver precio</span>
+                </div>
+              </div>
             </div>
-            <div class="product-actions">
-               <button class="btn-consultar">CONSULTAR PRECIO</button>
-            </div>
-          </div>
-        {%- endfor -%}
-      {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+      
+      <!-- Navigation -->
+      <div class="slider-nav">
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
+      <div class="swiper-pagination"></div>
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new Swiper('.product-slider', {
+      slidesPerView: 1,
+      spaceBetween: 20,
+      loop: false,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        640: { slidesPerView: 2 },
+        1024: { slidesPerView: 3 },
+        1200: { slidesPerView: 4 }
+      }
+    });
+  });
+</script>
 
 {% schema %}
 {

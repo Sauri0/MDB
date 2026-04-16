@@ -34,6 +34,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
+    <!-- Swiper.js for Product Sliders -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
     <script>
       document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
     </script>
@@ -50,6 +54,8 @@
 
     {% render 'cart-drawer' %}
     {% render 'auth-drawer' %}
+
+    {{ 'cart-ajax.js' | asset_url | script_tag }}
     
     <script>
       // High-Fidelity Scroll Animation System with GSAP
