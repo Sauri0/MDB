@@ -54,27 +54,30 @@
       <!-- Grid Wrap -->
       <div class="collection-grid-wrap" id="CollectionSection">
         <div class="collection-grid" id="ProductGrid">
-          {%- comment -%}
-            FIX: Use collection or collections.all if we are at the root
-          {%- endcomment -%}
-          {%- assign target_collection = collection -%}
-          {%- if collection.handle == 'all' and collection.products_count == 0 -%}
-             {%- assign target_collection = collections['all'] -%}
-          {%- endif -%}
-
-          {%- paginate target_collection.products by 40 -%}
-            {%- if target_collection.products.size > 0 -%}
-              {%- for product in target_collection.products -%}
-                <div class="product-grid-item">
-                  {% render 'product-card', product: product, show_vendor: true %}
-                </div>
-              {%- endfor -%}
-            {%- else -%}
-              <div class="collection-empty">
-                <span class="empty-emoji">🔍</span>
-                <p>No encontramos productos en esta categoría.</p>
-                <a href="/collections/all" class="btn-primary">VER TODO</a>
+          {%- paginate collection.products by 40 -%}
+            {%- assign has_products = false -%}
+            
+            {%- for product in collection.products -%}
+              {%- assign has_products = true -%}
+              <div class="product-grid-item">
+                {% render 'product-card', product: product, show_vendor: true %}
               </div>
+            {%- endfor -%}
+
+            {%- if has_products == false -%}
+              {%- if collection.handle == 'all' or collection.handle == blank -%}
+                {%- for product in collections.all.products limit: 40 -%}
+                   <div class="product-grid-item">
+                    {% render 'product-card', product: product, show_vendor: true %}
+                  </div>
+                {%- endfor -%}
+              {%- else -%}
+                <div class="collection-empty">
+                  <span class="empty-emoji">🔍</span>
+                  <p>No encontramos productos en esta categoría.</p>
+                  <a href="/collections/all" class="btn-primary">VER TODO</a>
+                </div>
+              {%- endif -%}
             {%- endif -%}
 
             {%- if paginate.pages > 1 -%}
@@ -120,6 +123,7 @@
 <style>
 .collection-main { padding: 120px 0 80px; background: #080808; position: relative; }
 .collection-header { text-align: center; margin-bottom: 60px; }
+.collection-description { color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto; font-size: 0.95rem; }
 
 /* Mobile Bar */
 .mobile-filters-bar { display: none; margin-bottom: 20px; }
@@ -211,7 +215,7 @@
   border-radius: 4px;
 }
 
-/* Grid Override (5 Columns) */
+/* Grid Layout */
 #ProductGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
