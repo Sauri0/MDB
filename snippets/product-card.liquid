@@ -14,40 +14,26 @@
     <span class="product-badge badge-premium">PREMIUM</span>
   {%- endif -%}
 
-  <div class="product-image-container">
-    <a href="{{ product.url }}" class="product-image-wrap">
-      {%- if product.featured_image -%}
+  <div class="product-image-container js-qv-trigger" data-handle="{{ product.handle }}">
+    <div class="product-image-wrap">
+      {%- if product.featured_image != blank -%}
         <img 
-          src="{{ product.featured_image | img_url: '450x' }}" 
+          src="{{ product.featured_image | img_url: '600x' }}" 
           alt="{{ product.title | escape }}" 
-          class="product-image" 
+          class="product-image"
           loading="lazy"
-          width="450"
-          height="450"
         >
       {%- else -%}
-        <div class="product-image-placeholder">🏷️</div>
+        {{ 'product-1' | placeholder_svg_tag: 'product-image-placeholder' }}
       {%- endif -%}
-    </a>
-    
-    {% comment %} B2B Quick Specs Hover Overlay {% endcomment %}
+    </div>
+
+    <!-- Glassmorphism Specs Overlay -->
     <div class="product-card-overlay">
       <div class="product-specs-mini">
-        {% if product.metafields.custom.packing_info != blank %}
-          <div class="spec-item">
-            <span class="spec-icon">📦</span>
-            <span class="spec-text">{{ product.metafields.custom.packing_info }}</span>
-          </div>
-        {% endif %}
-        {% if product.metafields.custom.alcohol_degree != blank %}
-          <div class="spec-item">
-            <span class="spec-icon">🍷</span>
-            <span class="spec-text">{{ product.metafields.custom.alcohol_degree }}% Vol</span>
-          </div>
-        {% endif %}
+        <div class="spec-item"><span class="spec-icon">📦</span> Stock Inmediato</div>
+        <div class="spec-item"><span class="spec-icon">🚚</span> Envío 24hs</div>
       </div>
-      <a href="{{ product.url }}" class="btn-quick-view">DETALLES</a>
-    </div>
   </div>
 
   <div class="product-info">

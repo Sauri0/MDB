@@ -1,0 +1,165 @@
+<div id="QuickViewModal" class="quick-view-modal">
+  <div class="qv-overlay js-qv-close"></div>
+  <div class="qv-content animate-pop">
+    <button class="qv-close js-qv-close" aria-label="Cerrar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    
+    <div class="qv-body js-qv-body">
+      {% comment %} Se llena dinámicamente via JS {% endcomment %}
+      <div class="qv-loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.quick-view-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.quick-view-modal.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+.qv-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+}
+
+.qv-content {
+  position: relative;
+  background: var(--color-bg);
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  z-index: 10;
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.quick-view-modal.open .qv-content {
+  transform: scale(1);
+}
+
+.qv-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.3s ease;
+}
+.qv-close:hover { background: var(--color-primary); transform: rotate(90deg); }
+
+.qv-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 400px;
+}
+
+@media (max-width: 768px) {
+  .qv-body { grid-template-columns: 1fr; overflow-y: auto; }
+}
+
+.qv-image-side {
+  background: #151515;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.qv-image-side img { max-width: 100%; max-height: 400px; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5)); }
+
+.qv-info-side {
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.qv-title { font-family: var(--font-display); font-size: 2rem; letter-spacing: 1px; margin: 0; }
+.qv-vendor { font-family: var(--font-heading); color: var(--color-primary); font-size: 0.8rem; letter-spacing: 3px; }
+.qv-price { font-family: var(--font-display); font-size: 1.8rem; color: white; }
+
+.qv-desc {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.qv-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: auto;
+}
+
+.qv-qty-selector {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--color-surface);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  width: fit-content;
+}
+
+.qv-qty-input {
+  background: transparent;
+  border: none;
+  color: white;
+  width: 40px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+
+.btn-qv-add {
+  background: var(--color-primary);
+  color: white;
+  width: 100%;
+  padding: 1.2rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 2px;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+}
+.btn-qv-add:hover { transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+
+.qv-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 400px;
+}
+</style>

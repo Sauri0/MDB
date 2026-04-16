@@ -9,16 +9,48 @@ window.ShopifyCart = (function() {
     itemsContainer: '.js-cart-items-container',
     totalPrice: '.js-cart-total-price',
     bubble: '#cart-icon-bubble',
-    closeBtn: '.js-cart-close'
+    closeBtn: '.js-cart-close',
+    qvModal: '#QuickViewModal',
+    qvBody: '.js-qv-body',
+    qvClose: '.js-qv-close'
   };
 
   function init() {
     document.addEventListener('click', (e) => {
       if (e.target.closest(selectors.closeBtn)) close();
+      if (e.target.closest(selectors.qvClose)) closeQuickView();
+      
       if (e.target.closest('.js-cart-trigger')) {
         e.preventDefault();
         open();
       }
+
+      // Quick View Trigger
+      const qvTrigger = e.target.closest('.js-qv-trigger');
+      if (qvTrigger) {
+        e.preventDefault();
+        openQuickView(qvTrigger.dataset.handle);
+      }
+
+      // Quantity adjustments in Modal
+      if (e.target.closest('.js-qv-minus')) {
+        const input = document.querySelector('.js-qv-qty-input');
+        if (input.value > 1) input.value = parseInt(input.value) - 1;
+      }
+      if (e.target.closest('.js-qv-plus')) {
+        const input = document.querySelector('.js-qv-qty-input');
+        input.value = parseInt(input.value) + 1;
+      }
+
+      // Add to cart from Modal
+      const qvAddBtn = e.target.closest('.js-qv-add');
+      if (qvAddBtn) {
+        const id = qvAddBtn.dataset.variantId;
+        const qty = parseInt(document.querySelector('.js-qv-qty-input').value);
+        addItem(id, qty);
+        closeQuickView();
+      }
+
       if (e.target.closest('.js-qty-minus')) updateQuantity(e.target.closest('[data-id]').dataset.id, -1);
       if (e.target.closest('.js-qty-plus')) updateQuantity(e.target.closest('[data-id]').dataset.id, 1);
     });
@@ -128,6 +160,55 @@ window.ShopifyCart = (function() {
     } else {
       bubble.innerHTML = '';
     }
+  }
+
+  async function openQuickView(handle) {
+    const modal = document.querySelector(selectors.qvModal);
+    const body = document.querySelector(selectors.qvBody);
+    
+    modal.classList.add('open');
+    body.innerHTML = '<div class="qv-loading"><div class="spinner"></div></div>';
+
+    try {
+      const response = await fetch(`/products/${handle}.js`);
+      const product = await response.json();
+      renderQuickView(product);
+    } catch (err) {
+      console.error('Error loading Quick View', err);
+      body.innerHTML = '<p class="error-msg">Error al cargar productos.</p>';
+    }
+  }
+
+  function closeQuickView() {
+    document.querySelector(selectors.qvModal).classList.remove('open');
+  }
+
+  function renderQuickView(product) {
+    const body = document.querySelector(selectors.qvBody);
+    const formattedPrice = Shopify.formatMoney(product.price);
+    const variantId = product.variants[0].id;
+
+    body.innerHTML = `
+      <div class="qv-image-side">
+        <img src="${product.featured_image}" alt="${product.title}">
+      </div>
+      <div class="qv-info-side">
+        <span class="qv-vendor uppercase">${product.vendor || 'MDB Industrial'}</span>
+        <h2 class="qv-title">${product.title}</h2>
+        <p class="qv-price">${formattedPrice}</p>
+        
+        <div class="qv-desc">${product.description || 'Sin descripción disponible.'}</div>
+        
+        <div class="qv-actions">
+          <div class="qv-qty-selector">
+            <button class="qty-btn js-qv-minus">-</button>
+            <input type="number" class="qv-qty-input js-qv-qty-input" value="1" min="1">
+            <button class="qty-btn js-qv-plus">+</button>
+          </div>
+          <button class="btn-qv-add js-qv-add" data-variant-id="${variantId}">AGREGAR AL CARRITO</button>
+        </div>
+      </div>
+    `;
   }
 
   return { init, open, close, addItem, refresh };
