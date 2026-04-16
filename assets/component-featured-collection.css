@@ -68,7 +68,7 @@
 .product-image-container {
   position: relative;
   background: #151515;
-  height: 280px;
+  height: 240px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -286,20 +286,27 @@
    ============================================= */
 .product-slider {
   margin: 0 auto;
-  overflow: hidden !important;
+  overflow: visible !important;
 }
 
 .product-slider .swiper-slide {
   height: auto;
-  transition: all 0.4s ease;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.3;
+  transform: scale(0.85);
+  filter: blur(4px);
+}
+
+.product-slider .swiper-slide-active {
   opacity: 1;
   transform: scale(1);
-  filter: none;
+  filter: blur(0);
+  z-index: 10;
 }
 
 .product-slider {
-  mask-image: none;
-  -webkit-mask-image: none;
+  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
 }
 
 .slider-nav {
