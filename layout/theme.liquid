@@ -64,22 +64,18 @@
       document.addEventListener("DOMContentLoaded", () => {
         gsap.registerPlugin(ScrollTrigger);
 
-        // Animate elements with class .animate-on-scroll
-        document.querySelectorAll(".animate-on-scroll").forEach((el) => {
-          gsap.fromTo(el, 
-            { opacity: 0, y: 30 },
-            { 
-              opacity: 1, 
-              y: 0, 
-              duration: 1, 
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: el,
-                start: "top 85%",
-                toggleActions: "play none none none"
-              }
-            }
-          );
+        // Batch animate elements for performance and visibility
+        ScrollTrigger.batch(".animate-on-scroll", {
+          onEnter: batch => gsap.to(batch, {
+            opacity: 1, 
+            y: 0, 
+            stagger: 0.1, 
+            duration: 0.8, 
+            ease: "power2.out",
+            overwrite: true
+          }),
+          start: "top 90%",
+          once: true
         });
       });
     </script>
