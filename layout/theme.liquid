@@ -64,6 +64,12 @@
       document.addEventListener("DOMContentLoaded", () => {
         gsap.registerPlugin(ScrollTrigger);
 
+        // Ensure elements are handleable immediately if script fails
+        const animatedEls = document.querySelectorAll(".animate-on-scroll");
+        
+        // Initial state set via JS (if CSS fails or for better control)
+        gsap.set(animatedEls, { opacity: 0, y: 30 });
+
         // Batch animate elements for performance and visibility
         ScrollTrigger.batch(".animate-on-scroll", {
           onEnter: batch => gsap.to(batch, {
@@ -72,11 +78,17 @@
             stagger: 0.1, 
             duration: 0.8, 
             ease: "power2.out",
-            overwrite: true
+            overwrite: true,
+            clearProps: "all" // Important: clear styles after animation
           }),
-          start: "top 90%",
+          start: "top 95%",
           once: true
         });
+
+        // Fail-safe: if elements are still invisible after 3 seconds, force them visible
+        setTimeout(() => {
+          gsap.to(".animate-on-scroll", { opacity: 1, y: 0, duration: 0.5, stagger: 0.05, clearProps: "all" });
+        }, 3000);
       });
     </script>
   </body>
