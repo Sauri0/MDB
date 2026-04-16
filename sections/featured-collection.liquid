@@ -58,43 +58,60 @@
   </div>
 </section>
 
+<style>
+  /* Fail-safe for Slider: Ensure horizontal even if JS fails */
+  .product-slider .swiper-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+</style>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const swiper = new Swiper('.swiper', {
-      slidesPerView: 1.2,
-      spaceBetween: 20,
-      loop: true,
-      centeredSlides: true,
-      grabCursor: true,
-      speed: 800,
-      autoplay: {
-        delay: 4000,
-        disableOnInteraction: false,
-      },
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
-      },
-      breakpoints: {
-        640: {
-          slidesPerView: 2.2,
-          spaceBetween: 30,
-        },
-        1024: {
-          slidesPerView: 3.5,
-          spaceBetween: 40,
-        },
-        1440: {
-          slidesPerView: 4.5,
-          spaceBetween: 50,
-        }
+  (function() {
+    function initMDBFeaturedSlider() {
+      const sliderEl = document.querySelector('.product-slider');
+      if (!sliderEl) return;
+      
+      if (typeof Swiper === 'undefined') {
+        console.warn('MDB: Swiper not found, retrying in 500ms...');
+        setTimeout(initMDBFeaturedSlider, 500);
+        return;
       }
-    });
-  });
+
+      new Swiper('.product-slider', {
+        slidesPerView: 1.2,
+        spaceBetween: 20,
+        loop: true,
+        centeredSlides: true,
+        grabCursor: true,
+        speed: 800,
+        autoplay: {
+          delay: 4000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+          640: { slidesPerView: 2.2, spaceBetween: 30 },
+          1024: { slidesPerView: 3.5, spaceBetween: 40 },
+          1440: { slidesPerView: 4.5, spaceBetween: 50 }
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMDBFeaturedSlider);
+    } else {
+      initMDBFeaturedSlider();
+    }
+  })();
 </script>
 
 {% schema %}
