@@ -8,7 +8,7 @@
         "headline_part2": "RESERVE",
         "tagline": "DISTRIBUCIÓN MAYORISTA DE BEBIDAS",
         "button_catalog_label": "VER CATÁLOGO",
-        "catalog_link": "/collections/all",
+        "catalog_link": "#catalogo",
         "button_secondary_label": "CONOCER MÁS",
         "secondary_link": "#beneficios"
       },
