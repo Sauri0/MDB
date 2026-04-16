@@ -1,7 +1,7 @@
 {{ 'component-featured-collection.css' | asset_url | stylesheet_tag }}
 
 <section id="catalogo" class="section featured-collection">
-  <div class="container">
+  <div class="container" style="position: relative;">
     <!-- Header -->
     <div class="catalog-header animate-on-scroll is-visible">
       <h2 class="section-title">
@@ -53,14 +53,14 @@
         {%- endif -%}
       </div>
       
-      <!-- Navigation -->
-      <div class="slider-nav">
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-      </div>
-      
       <!-- Pagination -->
       <div class="swiper-pagination"></div>
+    </div>
+
+    <!-- Navigation (Moved Outside Mask for Clarity) -->
+    <div class="slider-nav">
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
     </div>
   </div>
 </section>
