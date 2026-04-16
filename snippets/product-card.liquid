@@ -18,7 +18,7 @@
     <div class="product-image-wrap">
       {%- if product.featured_image != blank -%}
         <img 
-          src="{{ product.featured_image | img_url: '600x' }}" 
+          src="{{ product.featured_image | img_url: '800x800', scale: 2 }}" 
           alt="{{ product.title | escape }}" 
           class="product-image"
           loading="lazy"
