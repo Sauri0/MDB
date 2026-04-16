@@ -41,9 +41,9 @@
           {%- for i in (1..section.settings.limit) -%}
             <div class="swiper-slide">
               <div class="product-card">
-                <span class="product-badge badge-premium">PRXIMAMENTE</span>
+                <span class="product-badge badge-premium">PRÓXIMAMENTE</span>
                 <div class="product-image-wrap">
-                  <div class="product-image-placeholder">Y?</div>
+                  <div class="product-image-placeholder">🏷️</div>
                 </div>
                 <div class="product-info">
                   <span class="product-vendor uppercase">MDB INDUSTRIAL</span>
@@ -79,16 +79,16 @@
 <script>
   (function() {
     function initMDBFeaturedSlider() {
-      const sliderEl = document.querySelector(".product-slider");
+      const sliderEl = document.querySelector('.product-slider');
       if (!sliderEl) return;
       
-      if (typeof Swiper === "undefined") {
-        console.warn("MDB: Swiper not found, retrying in 500ms...");
+      if (typeof Swiper === 'undefined') {
+        console.warn('MDB: Swiper not found, retrying in 500ms...');
         setTimeout(initMDBFeaturedSlider, 500);
         return;
       }
 
-      new Swiper(".product-slider", {
+      new Swiper('.product-slider', {
         slidesPerView: 1.2,
         spaceBetween: 20,
         loop: true,
@@ -107,12 +107,12 @@
           pauseOnMouseEnter: true
         },
         pagination: {
-          el: ".swiper-pagination",
+          el: '.swiper-pagination',
           clickable: true,
         },
         navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
         },
         breakpoints: {
           640: { slidesPerView: 2.2, spaceBetween: 30 },
@@ -123,30 +123,30 @@
     }
 
     // Quick-View: Delegate clicks on product cards
-    document.addEventListener("click", function(e) {
-      const btn    = e.target.closest(".js-qv-open-btn, .btn-quick-view");
-      const card   = e.target.closest(".js-qv-card");
+    document.addEventListener('click', function(e) {
+      const btn    = e.target.closest('.js-qv-open-btn, .btn-quick-view');
+      const card   = e.target.closest('.js-qv-card');
       if (!card) return;
       e.preventDefault();
 
       try {
-        const bulk = JSON.parse(card.dataset.bulk || "[]");
+        const bulk = JSON.parse(card.dataset.bulk || '[]');
         window.MDBQuickView && window.MDBQuickView.open({
-          name:         card.dataset.title || "",
-          category:     card.dataset.category || "",
-          presentation: card.dataset.presentation || "",
-          description:  card.dataset.description || "",
-          image:        card.dataset.image || "",
-          variantId:    card.dataset.variantId || "",
+          name:         card.dataset.title || '',
+          category:     card.dataset.category || '',
+          presentation: card.dataset.presentation || '',
+          description:  card.dataset.description || '',
+          image:        card.dataset.image || '',
+          variantId:    card.dataset.variantId || '',
           bulkPricing:  bulk
         });
       } catch(err) {
-        console.warn("MDB QuickView error:", err);
+        console.warn('MDB QuickView error:', err);
       }
     });
 
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initMDBFeaturedSlider);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMDBFeaturedSlider);
     } else {
       initMDBFeaturedSlider();
     }
@@ -155,30 +155,30 @@
 
 {% schema %}
 {
-  "name": "Catǭlogo Destacado",
+  "name": "Catálogo Destacado",
   "settings": [
     {
       "type": "text",
       "id": "title_part1",
-      "label": "Ttulo Parte 1",
+      "label": "Título Parte 1",
       "default": "NUESTRO"
     },
     {
       "type": "text",
       "id": "title_part2",
-      "label": "Ttulo Parte Acento",
-      "default": "CAT?LOGO"
+      "label": "Título Parte Acento",
+      "default": "CATÁLOGO"
     },
     {
       "type": "text",
       "id": "subtitle",
-      "label": "Subttulo",
-      "default": "Mǭs de 100 productos disponibles - Consultǭ precio por WhatsApp"
+      "label": "Subtítulo",
+      "default": "Más de 100 productos disponibles · Consultá precio por WhatsApp"
     },
     {
       "type": "collection",
       "id": "collection",
-      "label": "Coleccin a Mostrar"
+      "label": "Colección a Mostrar"
     },
     {
       "type": "range",
@@ -192,7 +192,7 @@
   ],
   "presets": [
     {
-      "name": "Catǭlogo Destacado"
+      "name": "Catálogo Destacado"
     }
   ]
 }

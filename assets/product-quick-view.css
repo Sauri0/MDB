@@ -1,20 +1,17 @@
-/* 
-  MDB INDUSTRIAL - B2B PRODUCT QUICK VIEW
-  Industrial Glassmorphism Aesthetics
-*/
+/* =============================================
+   MDB — Product Quick View Drawer
+   ============================================= */
 
+/* Backdrop */
 .mdb-quickview-backdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  z-index: 1000;
+  backdrop-filter: blur(4px);
+  z-index: 9000;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 
 .mdb-quickview-backdrop.is-open {
@@ -22,20 +19,22 @@
   visibility: visible;
 }
 
+/* Drawer */
 .mdb-quickview-drawer {
   position: fixed;
   top: 0;
   right: 0;
-  width: 520px;
   height: 100vh;
-  background: #080808;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
-  z-index: 1001;
+  width: 480px;
+  max-width: 95vw;
+  background: #0d0d0d;
+  border-left: 1px solid rgba(204, 0, 0, 0.25);
+  z-index: 9001;
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
 }
 
 .mdb-quickview-drawer.is-open {
@@ -44,31 +43,20 @@
 
 /* Header */
 .mdb-qv-header {
-  padding: 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  background: #0d0d0d;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
 }
 
-.mdb-qv-brand {
-  display: block;
-  font-family: var(--font-heading, sans-serif);
-  font-size: 0.65rem;
-  font-weight: 800;
+.mdb-qv-header-title {
+  font-family: var(--font-heading, 'Barlow Condensed', sans-serif);
+  font-size: 0.7rem;
+  font-weight: 700;
   letter-spacing: 4px;
-  color: #cc0000;
-  margin-bottom: 4px;
-}
-
-.mdb-qv-header h2 {
-  font-family: var(--font-heading, sans-serif);
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: white;
-  margin: 0;
-  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
 }
 

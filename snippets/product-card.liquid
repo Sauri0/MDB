@@ -7,7 +7,7 @@
 
 {%- liquid
   assign bulk_pricing = product.metafields.custom.bulk_pricing.value
-  assign base_price_str = "?\""
+  assign base_price_str = '—'
   if bulk_pricing and bulk_pricing.size > 0
     assign first_tier = bulk_pricing | first
     assign base_price_str = first_tier.price
@@ -50,10 +50,10 @@
     <!-- Glassmorphism hover overlay -->
     <div class="product-card-overlay">
       <div class="product-specs-mini">
-        <div class="spec-item"><span class="spec-icon">Y"</span> Stock Inmediato</div>
-        <div class="spec-item"><span class="spec-icon">Yss</span> Envo 24hs</div>
+        <div class="spec-item"><span class="spec-icon">📦</span> Stock Inmediato</div>
+        <div class="spec-item"><span class="spec-icon">🚚</span> Envío 24hs</div>
         {%- if bulk_pricing and bulk_pricing.size > 0 -%}
-          <div class="spec-item"><span class="spec-icon">Y'</span> Escala B2B</div>
+          <div class="spec-item"><span class="spec-icon">💰</span> Escala B2B</div>
         {%- endif -%}
       </div>
       <button class="btn-quick-view">VER DETALLE</button>
@@ -72,7 +72,7 @@
       {%- elsif product.price > 0 -%}
         <span class="product-price">{{ product.price | money }}</span>
       {%- else -%}
-        <span class="product-price-logged-out">Consultǭ precio</span>
+        <span class="product-price-logged-out">Consultá precio</span>
       {%- endif -%}
     </div>
   </div>
