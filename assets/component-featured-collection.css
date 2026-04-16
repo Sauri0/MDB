@@ -295,13 +295,21 @@
   opacity: 0.3;
   transform: scale(0.85);
   filter: blur(4px);
-  will-change: transform, opacity;
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 
-/* Prevent CSS transitions from fighting Swiper during drag */
+/* 🟢 GPU Optimization: Strip expensive filters during drag/interaction */
+.product-slider.swiper-grabbing .swiper-slide,
 .swiper-free-mode .swiper-slide,
 .swiper-pointer-events.swiper-grabbed .swiper-slide {
   transition: none !important;
+  filter: none !important;
+  backdrop-filter: none !important;
+  opacity: 0.8 !important; /* Slight dim during drag for focus */
 }
 
 .product-slider .swiper-slide-active {
@@ -314,7 +322,14 @@
 .product-slider {
   mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-  padding-bottom: 60px !important;
+  padding-bottom: 80px !important;
+  transform: translate3d(0,0,0); /* Force GPU */
+}
+
+/* Hide mask during drag for performance */
+.product-slider.swiper-grabbing {
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
 }
 
 .swiper-pagination {
