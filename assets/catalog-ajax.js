@@ -50,27 +50,44 @@ class CatalogAJAX {
   }
 
   initQuickView() {
+    // Robust delegation with multiple triggers
     document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.js-qv-open-btn, .btn-quick-view, .product-image-container');
-      const card = e.target.closest('.js-qv-card');
+      const target = e.target;
+      const btn = target.closest('.js-qv-open-btn, .btn-quick-view, .product-image-container');
+      const card = target.closest('.js-qv-card');
+      
       if (!card || !btn) return;
       
       e.preventDefault();
-      try {
-        const bulk = JSON.parse(card.dataset.bulk || '[]');
-        window.MDBQuickView && window.MDBQuickView.open({
-          name:         card.dataset.title || '',
-          category:     card.dataset.category || '',
-          presentation: card.dataset.presentation || '',
-          description:  card.dataset.description || '',
-          image:        card.dataset.image || '',
-          variantId:    card.dataset.variantId || '',
-          bulkPricing:  bulk
-        });
-      } catch(err) {
-        console.warn('MDB Global QuickView error:', err);
+      e.stopPropagation();
+
+      // Check if MDBQuickView is available
+      if (window.MDBQuickView) {
+        this.openQuickView(card);
+      } else {
+        console.warn('MDB: QuickView system not ready, retrying...');
+        setTimeout(() => {
+          if (window.MDBQuickView) this.openQuickView(card);
+        }, 500);
       }
     });
+  }
+
+  openQuickView(card) {
+    try {
+      const bulk = JSON.parse(card.dataset.bulk || '[]');
+      window.MDBQuickView.open({
+        name:         card.dataset.title || '',
+        category:     card.dataset.category || '',
+        presentation: card.dataset.presentation || '',
+        description:  card.dataset.description || '',
+        image:        card.dataset.image || '',
+        variantId:    card.dataset.variantId || '',
+        bulkPricing:  bulk
+      });
+    } catch(err) {
+      console.error('MDB QuickView Error:', err);
+    }
   }
 
   async updateCatalog(url, updateHistory = true) {
@@ -120,13 +137,7 @@ class CatalogAJAX {
                 stagger: 0.04, 
                 duration: 0.6, 
                 ease: "power3.out",
-                clearProps: "all",
-                onComplete: () => {
-                   newItems.forEach(item => {
-                     item.style.opacity = "1";
-                     item.style.transform = "none";
-                   });
-                }
+                clearProps: "all"
               }
             );
           }
