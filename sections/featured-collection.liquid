@@ -1,7 +1,9 @@
 {{ 'component-featured-collection.css' | asset_url | stylesheet_tag }}
 
+{% render 'product-quick-view' %}
+
 <section id="catalogo" class="section featured-collection">
-  <div class="container" style="position: relative;">
+  <div class="container">
     <!-- Header -->
     <div class="catalog-header animate-on-scroll is-visible">
       <h2 class="section-title">
@@ -25,7 +27,7 @@
 
         {%- if target_collection != blank and target_collection.products_count > 0 -%}
           {%- comment -%}
-            Repeat products 3 times to ensure infinite loop works perfectly while keeping DOM light
+            Repeat products 3 times to ensure infinite loop works perfectly even with small collections
           {%- endcomment -%}
           {%- for i in (1..3) -%}
             {%- for product in target_collection.products limit: section.settings.limit -%}
@@ -39,9 +41,9 @@
           {%- for i in (1..section.settings.limit) -%}
             <div class="swiper-slide">
               <div class="product-card">
-                <span class="product-badge badge-premium">PRÓXIMAMENTE</span>
+                <span class="product-badge badge-premium">PRXIMAMENTE</span>
                 <div class="product-image-wrap">
-                  <div class="product-image-placeholder">🏷️</div>
+                  <div class="product-image-placeholder">Y?</div>
                 </div>
                 <div class="product-info">
                   <span class="product-vendor uppercase">MDB INDUSTRIAL</span>
@@ -57,10 +59,10 @@
       <div class="swiper-pagination"></div>
     </div>
 
-    <!-- Navigation (Moved Outside Mask for Clarity) -->
+    <!-- Navigation (Moved Outside Mask) -->
     <div class="slider-nav">
       <div class="swiper-button-prev"></div>
-      <div class="swiper-button-next"></div>
+      <div class="swiper-button-next" style="right: -40px;"></div>
     </div>
   </div>
 </section>
@@ -77,16 +79,16 @@
 <script>
   (function() {
     function initMDBFeaturedSlider() {
-      const sliderEl = document.querySelector('.product-slider');
+      const sliderEl = document.querySelector(".product-slider");
       if (!sliderEl) return;
       
-      if (typeof Swiper === 'undefined') {
-        console.warn('MDB: Swiper not found, retrying in 500ms...');
+      if (typeof Swiper === "undefined") {
+        console.warn("MDB: Swiper not found, retrying in 500ms...");
         setTimeout(initMDBFeaturedSlider, 500);
         return;
       }
 
-      new Swiper('.product-slider', {
+      new Swiper(".product-slider", {
         slidesPerView: 1.2,
         spaceBetween: 20,
         loop: true,
@@ -105,12 +107,12 @@
           pauseOnMouseEnter: true
         },
         pagination: {
-          el: '.swiper-pagination',
+          el: ".swiper-pagination",
           clickable: true,
         },
         navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
         },
         breakpoints: {
           640: { slidesPerView: 2.2, spaceBetween: 30 },
@@ -120,8 +122,31 @@
       });
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initMDBFeaturedSlider);
+    // Quick-View: Delegate clicks on product cards
+    document.addEventListener("click", function(e) {
+      const btn    = e.target.closest(".js-qv-open-btn, .btn-quick-view");
+      const card   = e.target.closest(".js-qv-card");
+      if (!card) return;
+      e.preventDefault();
+
+      try {
+        const bulk = JSON.parse(card.dataset.bulk || "[]");
+        window.MDBQuickView && window.MDBQuickView.open({
+          name:         card.dataset.title || "",
+          category:     card.dataset.category || "",
+          presentation: card.dataset.presentation || "",
+          description:  card.dataset.description || "",
+          image:        card.dataset.image || "",
+          variantId:    card.dataset.variantId || "",
+          bulkPricing:  bulk
+        });
+      } catch(err) {
+        console.warn("MDB QuickView error:", err);
+      }
+    });
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initMDBFeaturedSlider);
     } else {
       initMDBFeaturedSlider();
     }
@@ -130,30 +155,30 @@
 
 {% schema %}
 {
-  "name": "Catálogo Destacado",
+  "name": "Catǭlogo Destacado",
   "settings": [
     {
       "type": "text",
       "id": "title_part1",
-      "label": "Título Parte 1",
+      "label": "Ttulo Parte 1",
       "default": "NUESTRO"
     },
     {
       "type": "text",
       "id": "title_part2",
-      "label": "Título Parte Acento",
-      "default": "CATÁLOGO"
+      "label": "Ttulo Parte Acento",
+      "default": "CAT?LOGO"
     },
     {
       "type": "text",
       "id": "subtitle",
-      "label": "Subtítulo",
-      "default": "Más de 100 productos disponibles · Consultá precio por WhatsApp"
+      "label": "Subttulo",
+      "default": "Mǭs de 100 productos disponibles - Consultǭ precio por WhatsApp"
     },
     {
       "type": "collection",
       "id": "collection",
-      "label": "Colección a Mostrar"
+      "label": "Coleccin a Mostrar"
     },
     {
       "type": "range",
@@ -167,7 +192,7 @@
   ],
   "presets": [
     {
-      "name": "Catálogo Destacado"
+      "name": "Catǭlogo Destacado"
     }
   ]
 }
