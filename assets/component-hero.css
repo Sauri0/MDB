@@ -81,10 +81,10 @@
 .hero-banner-bar {
   background: var(--color-primary);
   color: white;
-  width: 100vw;
-  max-width: none;
-  margin-left: calc(-50vw + 50%);
-  padding: 1.2rem 0;
+  width: auto;
+  max-width: fit-content;
+  margin: 0 auto;
+  padding: 1rem 3rem;
   font-family: var(--font-heading);
   font-size: clamp(1rem, 2.5vw, 1.4rem);
   font-weight: 700;
@@ -94,6 +94,7 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 40px rgba(204, 0, 0, 0.3);
+  border-radius: var(--radius-sm);
 }
 
 /* New Buttons Style (Photo 1 Parity) */
@@ -235,9 +236,10 @@
     width: 100%;
     align-items: center;
   }
-  .hero-btn-primary, .hero-btn-secondary {
+  .hero-btn-whatsapp, .hero-btn-catalog {
     width: 100%;
     justify-content: center;
   }
   .hero-headline { font-size: clamp(2.5rem, 10vw, 4rem); letter-spacing: 2px; }
+  .hero-tagline { font-size: 0.75rem; padding: 0.5rem 1rem; }
 }
