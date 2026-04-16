@@ -53,11 +53,7 @@
         {%- endif -%}
       </div>
       
-      <!-- Navigation -->
-      <div class="slider-nav">
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-      </div>
+      <!-- Pagination -->
       <div class="swiper-pagination"></div>
     </div>
   </div>
@@ -93,7 +89,7 @@
         speed: 800,
         watchSlidesProgress: true,
         touchThreshold: 10,
-        resistanceRatio: 0,
+        touchRatio: 1,
         freeMode: {
           enabled: true,
           sticky: true,
@@ -101,13 +97,14 @@
           momentumRatio: 1,
           momentumVelocityRatio: 1,
         },
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true
+        },
         pagination: {
           el: '.swiper-pagination',
           clickable: true,
-        },
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
         },
         breakpoints: {
           640: { slidesPerView: 2.2, spaceBetween: 30 },
