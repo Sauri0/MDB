@@ -55,7 +55,7 @@
       <div class="collection-grid-wrap" id="CollectionSection">
         <div class="collection-grid" id="ProductGrid">
           {%- paginate collection.products by 40 -%}
-            {%- if collection.products_count > 0 -%}
+            {%- if collection.products.size > 0 -%}
               {%- for product in collection.products -%}
                 <div class="product-grid-item">
                   {% render 'product-card', product: product, show_vendor: true %}
