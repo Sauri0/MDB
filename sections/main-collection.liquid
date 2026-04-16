@@ -33,26 +33,32 @@
       </aside>
 
       <!-- Products Grid -->
-      <div class="collection-grid-wrap">
+      <div class="collection-grid-wrap" id="CollectionSection">
         <div class="collection-grid" id="ProductGrid">
-          {%- if collection.products_count > 0 -%}
-            {%- for product in collection.products -%}
-              {% render 'product-card', product: product, show_vendor: true %}
-            {%- endfor -%}
-          {%- else -%}
-            <div class="collection-empty">
-              <span class="empty-emoji">🔍</span>
-              <p>No encontramos productos en esta categoría.</p>
-              <a href="/collections/all" class="btn-primary">VER TODO</a>
-            </div>
-          {%- endif -%}
+          {%- paginate collection.products by 40 -%}
+            {%- if collection.products_count > 0 -%}
+              {%- for product in collection.products -%}
+                {% render 'product-card', product: product, show_vendor: true %}
+              {%- endfor -%}
+            {%- else -%}
+              <div class="collection-empty">
+                <span class="empty-emoji">🔍</span>
+                <p>No encontramos productos en esta categoría.</p>
+                <a href="/collections/all" class="btn-primary">VER TODO</a>
+              </div>
+            {%- endif -%}
+
+            {%- if paginate.pages > 1 -%}
+              <div class="pagination">
+                {{ paginate | default_pagination }}
+              </div>
+            {%- endif -%}
+          {%- endpaginate -%}
         </div>
 
-        {%- if paginate.pages > 1 -%}
-          <div class="pagination">
-            {{ paginate | default_pagination }}
-          </div>
-        {%- endif -%}
+        <div class="catalog-loading-overlay">
+          <div class="loading-spinner"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -101,9 +107,41 @@
 
 .collection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+  transition: opacity 0.3s ease;
 }
+
+@media (min-width: 1440px) {
+  .collection-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.collection-grid-wrap { position: relative; }
+.catalog-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+.loading--active .catalog-loading-overlay { opacity: 1; pointer-events: auto; }
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 .collection-empty {
   grid-column: 1 / -1;
