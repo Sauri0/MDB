@@ -1,61 +1,35 @@
 <section id="mdb-reviews" class="section reviews-vertical-section">
   <div class="container reviews-container">
     <div class="reviews-header animate-on-scroll">
-      <h2 class="section-title">LO QUE DICEN <span>NUESTROS CLIENTES</span></h2>
+      <h2 class="section-title">MOVIMIENTO <span>MAYORISTA</span></h2>
       <div class="divider"></div>
+      <p class="section-subtitle">Lo que dicen nuestros socios estratégicos y compras recientes.</p>
     </div>
 
     <div class="reviews-scroller-wrap animate-on-scroll">
       <div class="reviews-track">
         {%- liquid
-          assign reviews = shop.metaobjects.review.values
-          if reviews.size == 0
-            # Mock data if no metaobjects yet
-            assign mock_reviews = "Juan B. (Bar Central),MDB es nuestro aliado estratégico. Precios reales.,5|Sofía L. (Vinoteca SM),La mejor logística de la zona. Nunca fallan.,5|MDB Distribuciones,Calidad premium en cada botella.,5" | split: "|"
-          endif
+          # Define a combined array of mock reviews and purchases
+          # Format: type, author/location, content, extra
+          assign raw_mocks = "review|Juan B. (Bar Central)|MDB es nuestro aliado estratégico. Precios reales en cada pedido.|5"
+          assign raw_mocks = raw_mocks | append: "##purchase|Distribuidora El Sol|compró 24 packs de Cerveza Corona 330ml|12:45hs"
+          assign raw_mocks = raw_mocks | append: "##review|Sofía L. (Vinoteca SM)|La mejor logística de la zona. Nunca fallan con el stock.|5"
+          assign raw_mocks = raw_mocks | append: "##purchase|Vinería San Juan|compró 12 cajas de Fernet Branca 750ml|Hace 5 min"
+          assign raw_mocks = raw_mocks | append: "##review|Jorge D. (Eventos MDB)|Calidad premium y respuesta rápida por WhatsApp.|5"
+          assign raw_mocks = raw_mocks | append: "##purchase|Resto Bar Palermo|compró 6 cajas de Gin Tanqueray + Tónicas|Recién"
+          
+          assign mocks = raw_mocks | split: "##"
         -%}
 
-        {%- if reviews.size > 0 -%}
-          {%- for review in reviews -%}
-            <div class="review-card">
-              <div class="review-stars">
-                {% for i in (1..review.calificacion) %}★{% endfor %}
-              </div>
-              <p class="review-text">"{{ review.comentario }}"</p>
-              <div class="review-meta">
-                <span class="review-author">{{ review.autor }}</span>
-                <span class="review-verified">✓ Compra Verificada</span>
-              </div>
-            </div>
-          {%- endfor -%}
-        {%- else -%}
-          {%- for mock in mock_reviews -%}
-            {%- assign parts = mock | split: "," -%}
-            <div class="review-card">
-              <div class="review-stars">★★★★★</div>
-              <p class="review-text">"{{ parts[1] }}"</p>
-              <div class="review-meta">
-                <span class="review-author">{{ parts[0] }}</span>
-                <span class="review-verified">✓ Socio Estratégico</span>
-              </div>
-            </div>
-          {%- endfor -%}
-        {%- endif -%}
-        
-        <!-- Duplicate for Infinite Loop -->
-        {%- if reviews.size > 0 -%}
-          {%- for review in reviews -%}
-            <div class="review-card" aria-hidden="true">
-              <div class="review-stars">
-                {% for i in (1..review.calificacion) %}★{% endfor %}
-              </div>
-              <p class="review-text">"{{ review.comentario }}"</p>
-              <div class="review-meta">
-                <span class="review-author">{{ review.autor }}</span>
-              </div>
-            </div>
-          {%- endfor -%}
-        {%- endif -%}
+        {%- comment -%} FIRST PASS {%- endcomment -%}
+        {%- for mock in mocks -%}
+          {% render 'review-item', data: mock %}
+        {%- endfor -%}
+
+        {%- comment -%} SECOND PASS (FOR INFINITE LOOP) {%- endcomment -%}
+        {%- for mock in mocks -%}
+          {% render 'review-item', data: mock, aria_hidden: true %}
+        {%- endfor -%}
       </div>
     </div>
   </div>
@@ -63,9 +37,11 @@
 
 <style>
 .reviews-vertical-section {
-  padding: 80px 0;
-  background: #050505;
+  padding: 100px 0;
+  background: #080808;
+  position: relative;
   overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 
 .reviews-container {
@@ -74,25 +50,30 @@
   align-items: center;
 }
 
+.section-subtitle {
+  text-align: center;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.9rem;
+  margin-top: -10px;
+  font-family: var(--font-body);
+}
+
 .reviews-scroller-wrap {
-  height: 400px;
+  height: 500px;
   width: 100%;
-  max-width: 600px;
+  max-width: 650px;
   position: relative;
   mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
 .reviews-track {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  animation: scrollVertical 20s linear infinite;
-}
-
-.reviews-track:hover {
-  animation-play-state: paused;
+  gap: 24px;
+  animation: scrollVertical 30s linear infinite;
+  /* Disable hover pause as requested (non-controllable) */
 }
 
 @keyframes scrollVertical {
@@ -101,46 +82,85 @@
 }
 
 .review-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  padding: 30px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 25px 35px;
   border-radius: var(--radius-lg);
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
 }
 
+.type-purchase {
+  border-left: 3px solid var(--color-primary);
+  background: linear-gradient(to right, rgba(204,0,0,0.05), transparent);
+}
+
+.review-type-badge {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.badge-review { background: rgba(255,255,255,0.05); color: #fff; }
+.badge-purchase { background: rgba(204,0,0,0.1); color: var(--color-primary); }
+
 .review-stars {
-  color: var(--color-primary);
-  font-size: 1.2rem;
-  margin-bottom: 15px;
+  color: #ffcc00;
+  font-size: 0.9rem;
 }
 
 .review-text {
   font-family: var(--font-body);
-  font-style: italic;
-  font-size: 1.1rem;
-  color: var(--color-text);
-  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #fff;
   line-height: 1.5;
+  margin: 0;
+}
+
+.purchase-content {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .review-meta {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
 }
 
 .review-author {
   font-family: var(--font-heading);
+  font-size: 0.75rem;
   text-transform: uppercase;
-  color: var(--color-primary);
+  color: rgba(255,255,255,0.4);
   letter-spacing: 1px;
 }
 
-.review-verified {
+.review-extra {
   font-size: 0.7rem;
+  color: rgba(255,255,255,0.2);
+  font-style: italic;
+}
+
+.verified-tag {
   color: #25D366;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-weight: 700;
+  margin-left: 10px;
+}
+
+@media (max-width: 768px) {
+  .reviews-scroller-wrap { height: 400px; }
+  .review-card { padding: 20px; }
 }
 </style>
 

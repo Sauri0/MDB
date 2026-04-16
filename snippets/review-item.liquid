@@ -1,0 +1,34 @@
+{%- liquid
+  assign parts = data | split: "|"
+  assign type = parts[0]
+  assign author = parts[1]
+  assign content = parts[2]
+  assign extra = parts[3]
+-%}
+
+<div class="review-card type-{{ type }}" {% if aria_hidden %}aria-hidden="true"{% endif %}>
+  <div class="review-top">
+    <span class="review-type-badge badge-{{ type }}">
+      {% if type == 'review' %}RESEÑA CLIENTE{% else %}COMPRA RECIENTE{% endif %}
+    </span>
+    {% if type == 'review' %}
+      <div class="review-stars">★★★★★</div>
+    {% endif %}
+  </div>
+
+  <div class="review-main">
+    {% if type == 'review' %}
+      <p class="review-text">"{{ content }}"</p>
+    {% else %}
+      <p class="purchase-content"><strong>{{ author }}</strong> {{ content }}</p>
+    {% endif %}
+  </div>
+
+  <div class="review-meta">
+    <span class="review-author">
+      {% if type == 'review' %}{{ author }}{% else %}VERIFICADO MDB{% endif %}
+      {% if type == 'review' %}<span class="verified-tag">✓</span>{% endif %}
+    </span>
+    <span class="review-extra">{{ extra }}</span>
+  </div>
+</div>
