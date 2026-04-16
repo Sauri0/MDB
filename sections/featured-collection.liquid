@@ -24,10 +24,15 @@
         -%}
 
         {%- if target_collection != blank and target_collection.products_count > 0 -%}
-          {%- for product in target_collection.products limit: section.settings.limit -%}
-            <div class="swiper-slide">
-              {% render 'product-card', product: product, show_vendor: true %}
-            </div>
+          {%- comment -%}
+            Repeat products 4 times to ensure infinite loop works perfectly even with small collections
+          {%- endcomment -%}
+          {%- for i in (1..4) -%}
+            {%- for product in target_collection.products limit: section.settings.limit -%}
+              <div class="swiper-slide">
+                {% render 'product-card', product: product, show_vendor: true %}
+              </div>
+            {%- endfor -%}
           {%- endfor -%}
         {%- else -%}
           <!-- Mockups if absolutely no products found -->
@@ -83,20 +88,17 @@
         slidesPerView: 1.2,
         spaceBetween: 20,
         loop: true,
-        loopedSlides: 8,
-        loopAdditionalSlides: 5,
         centeredSlides: true,
         grabCursor: true,
         speed: 1000,
         watchSlidesProgress: true,
+        touchThreshold: 15,
+        touchRatio: 1.5,
         freeMode: {
           enabled: true,
           sticky: true,
           momentumRatio: 0.5,
-        },
-        autoplay: {
-          delay: 4000,
-          disableOnInteraction: false,
+          momentumVelocityRatio: 0.5,
         },
         pagination: {
           el: '.swiper-pagination',
