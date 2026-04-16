@@ -1,0 +1,196 @@
+<aside id="mdb-quickview-backdrop" class="mdb-quickview-backdrop"></aside>
+<aside id="mdb-quickview-drawer" class="mdb-quickview-drawer">
+  <div class="mdb-qv-header">
+    <div class="mdb-qv-header-main">
+      <span class="mdb-qv-brand">MDB INDUSTRIAL</span>
+      <h2 id="mdb-qv-title">Detalle de Producto</h2>
+    </div>
+    <button id="mdb-qv-close-btn" class="mdb-qv-close" aria-label="Cerrar">?"</button>
+  </div>
+
+  <div id="mdb-qv-content" class="mdb-qv-content">
+    <!-- Dynamic content goes here -->
+  </div>
+
+  <div class="mdb-qv-footer">
+    <button id="mdb-qv-add-cart" class="mdb-qv-btn-cart">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      AGREGAR AL PEDIDO
+    </button>
+    <button id="mdb-qv-whatsapp" class="mdb-qv-btn-whatsapp">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.022-.039-.533-.294-.61-.334-.076-.04-.132-.06-.188.025-.056.085-.218.272-.267.33-.049.059-.098.065-.174.025-.076-.04-3.235-1.192-3.704-1.608-.469-.416-.732-.614-.732-.614s.015-.015.016-.016c.01-.01.127-.148.19-.221.065-.074.085-.126.126-.209.041-.083.02-.156-.01-.22-.03-.065-.261-.63-.358-.862-.095-.226-.192-.194-.261-.197-.068-.003-.146-.003-.223-.003s-.204.028-.31.144c-.106.116-.406.398-.406.97 0 .572.416 1.125.474 1.201.058.076.818 1.248 1.983 1.751.278.12.494.192.663.245.279.088.533.076.733.045.223-.033.687-.282.784-.555.097-.273.097-.506.068-.555-.029-.049-.106-.078-.182-.117zM12.01 2c-5.523 0-10 4.477-10 10 0 1.765.459 3.42 1.258 4.86L2.33 21.67l4.98-1.306c1.411.77 3.011 1.21 4.7 1.21 5.523 0 10-4.477 10-10s-4.477-10-10-10zm0 18.333c-1.574 0-3.043-.464-4.281-1.259l-.307-.19-2.946.77.785-2.868-.21-.334A8.286 8.286 0 0 1 3.743 12c0-4.577 3.73-8.308 8.307-8.308s8.308 3.731 8.308 8.308-3.731 8.308-8.308 8.308z"/></svg>
+      CONSULTAR POR WHATSAPP
+    </button>
+  </div>
+</aside>
+
+<script>
+(function() {
+  const WHATSAPP_NUMBER = "5491100000000";
+
+  const backdrop   = document.getElementById("mdb-quickview-backdrop");
+  const drawer     = document.getElementById("mdb-quickview-drawer");
+  const closeBtn   = document.getElementById("mdb-qv-close-btn");
+  const content    = document.getElementById("mdb-qv-content");
+  const addCartBtn = document.getElementById("mdb-qv-add-cart");
+  const waBtn      = document.getElementById("mdb-qv-whatsapp");
+
+  let currentProduct = null;
+
+  function open(product) {
+    currentProduct = product;
+    renderContent(product);
+    backdrop.classList.add("is-open");
+    drawer.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+  }
+
+  function close() {
+    backdrop.classList.remove("is-open");
+    drawer.classList.remove("is-open");
+    document.body.style.overflow = "";
+    setTimeout(() => { currentProduct = null; }, 400);
+  }
+
+  function formatARS(num) {
+    return "$" + Number(num).toLocaleString("es-AR");
+  }
+
+  function calcUnitPrice(qty, bulkPricing) {
+    if (!bulkPricing || !bulkPricing.length) return null;
+    let unit = bulkPricing[0].unitPrice;
+    for (const tier of bulkPricing) {
+      if (qty >= tier.minQty) unit = tier.unitPrice;
+    }
+    return unit;
+  }
+
+  function renderContent(product) {
+    const bulkPricing = product.bulkPricing || [];
+
+    const bulkRows = bulkPricing.length
+      ? bulkPricing.map(t => `
+          <div class="mdb-bulk-row">
+            <span class="mdb-bulk-qty">${t.qty}</span>
+            <span class="mdb-bulk-price">${t.price}</span>
+          </div>`).join("")
+      : `<p class="mdb-bulk-consult">Consultǭ escala por volumen va WhatsApp.</p>`;
+
+    const basePrice = bulkPricing.length ? formatARS(bulkPricing[0].unitPrice) : "?\"";
+
+    content.innerHTML = `
+      <div class="mdb-qv-image-block">
+        ${product.image
+          ? `<img src="${product.image}" alt="${product.name}" loading="eager">`
+          : `<div class="mdb-qv-image-placeholder">Y?</div>`}
+        ${product.badge ? `<span class="mdb-qv-badge">${product.badge}</span>` : ""}
+      </div>
+
+      <div class="mdb-qv-info">
+        <span class="mdb-qv-category">${(product.category || "").toUpperCase()}</span>
+        <h3 class="mdb-qv-name">${product.name}</h3>
+        <p class="mdb-qv-presentation">${product.presentation || ""}</p>
+        <div class="mdb-qv-status">Stock disponible</div>
+      </div>
+
+      <div class="mdb-qv-desc-block">
+        <h4>Descripcin</h4>
+        <p>${product.description || "Consultǭ para mǭs detalles tǸcnicos sobre este producto premium."}</p>
+      </div>
+
+      <div class="mdb-qv-bulk-block">
+        <div class="mdb-qv-bulk-header">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l-8 4v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6l-8-4z"/></svg>
+          <h4>Escala de Precios B2B</h4>
+        </div>
+        <div class="mdb-bulk-rows">${bulkRows}</div>
+        <p class="mdb-bulk-disclaimer">* Precios sujetos a variaciones de mercado. Consultǭ vigencia.</p>
+      </div>
+
+      <div class="mdb-qv-qty-block">
+        <label>CANTIDAD</label>
+        <div class="mdb-qty-control">
+          <button class="mdb-qty-btn" id="mdb-qty-minus">^'</button>
+          <input class="mdb-qty-input" type="number" id="mdb-qty-val" value="1" min="1" max="999">
+          <button class="mdb-qty-btn" id="mdb-qty-plus">+</button>
+        </div>
+        <p class="mdb-qv-unit-price" id="mdb-unit-price-display">
+          Precio unitario: <strong id="mdb-unit-price">${basePrice}</strong>
+        </p>
+      </div>
+    `;
+
+    // Qty controls
+    const qtyInput = document.getElementById("mdb-qty-val");
+    const unitDisplay = document.getElementById("mdb-unit-price");
+
+    function updateUnitPrice() {
+      const qty = parseInt(qtyInput.value) || 1;
+      const unit = calcUnitPrice(qty, product.bulkPricing);
+      if (unit && unitDisplay) unitDisplay.textContent = formatARS(unit);
+    }
+
+    document.getElementById("mdb-qty-minus").addEventListener("click", () => {
+      if (parseInt(qtyInput.value) > 1) { qtyInput.value = parseInt(qtyInput.value) - 1; updateUnitPrice(); }
+    });
+    document.getElementById("mdb-qty-plus").addEventListener("click", () => {
+      qtyInput.value = parseInt(qtyInput.value) + 1; updateUnitPrice();
+    });
+    qtyInput.addEventListener("input", updateUnitPrice);
+  }
+
+  // Add to cart
+  addCartBtn.addEventListener("click", () => {
+    if (!currentProduct) return;
+    const qty = parseInt(document.getElementById("mdb-qty-val")?.value || 1);
+    const unitPrice = calcUnitPrice(qty, currentProduct.bulkPricing);
+
+    // Add to Shopify cart via AJAX
+    fetch("/cart/add.js", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({
+        id: currentProduct.variantId,
+        quantity: qty,
+        properties: {
+          "Precio unitario": unitPrice ? "$" + unitPrice.toLocaleString("es-AR") : "",
+          "Escala aplicada": qty >= 12 ? "Mayorista 12+" : qty >= 6 ? "Mayorista 6+" : "Unidad"
+        }
+      })
+    })
+    .then(r => r.json())
+    .then(() => {
+      addCartBtn.textContent = "o\" AGREGADO!";
+      addCartBtn.style.background = "#22c55e";
+      setTimeout(() => {
+        addCartBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> AGREGAR AL PEDIDO';
+        addCartBtn.style.background = "";
+      }, 2000);
+      // Refresh cart count if available
+      document.dispatchEvent(new CustomEvent("cart:refresh"));
+    })
+    .catch(() => {
+      // Fallback: WhatsApp if cart fails
+      const msg = encodeURIComponent(`Hola! Quiero pedir: ${currentProduct.name} x${qty}`);
+      window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
+    });
+  });
+
+  // WhatsApp
+  waBtn.addEventListener("click", () => {
+    if (!currentProduct) return;
+    const qty = parseInt(document.getElementById("mdb-qty-val")?.value || 1);
+    const msg = encodeURIComponent(
+      `Hola! Me interesa consultar precio mayorista de:\n*${currentProduct.name}*${currentProduct.presentation ? ` (${currentProduct.presentation})` : ""}\nCantidad: ${qty} unidades`
+    );
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, "_blank");
+  });
+
+  backdrop.addEventListener("click", close);
+  closeBtn.addEventListener("click", close);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+
+  // Expose globally
+  window.MDBQuickView = { open, close };
+})();
+</script>
