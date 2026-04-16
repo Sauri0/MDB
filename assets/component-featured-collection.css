@@ -291,23 +291,29 @@
 
 .product-slider .swiper-slide {
   height: auto;
-  transition: opacity 0.6s ease, filter 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-  opacity: 0.3;
-  transform: scale(0.85);
-  filter: blur(4px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.5;
+  transform: scale(0.9);
   will-change: transform, opacity;
 }
 
 .product-slider .swiper-slide-active {
   opacity: 1;
   transform: scale(1);
-  filter: blur(0);
   z-index: 10;
 }
 
 .product-slider {
-  mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-  -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+  /* Removed expensive mask-image */
+  padding-bottom: 50px !important;
+}
+
+.swiper-pagination {
+  position: absolute !important;
+  bottom: 0px !important;
+  left: 0;
+  width: 100%;
+  z-index: 20;
 }
 
 .slider-nav {
