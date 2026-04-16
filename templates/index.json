@@ -1,17 +1,17 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "layout": "theme",
   "sections": {
     "hero": {
       "type": "hero",
-      "settings": {
-        "headline_part1": "MDB INDUSTRIAL",
-        "headline_part2": "RESERVE",
-        "tagline": "DISTRIBUCIÓN MAYORISTA DE BEBIDAS",
-        "button_catalog_label": "VER CATÁLOGO",
-        "catalog_link": "#catalogo",
-        "button_secondary_label": "CONOCER MÁS",
-        "secondary_link": "#beneficios"
-      },
       "blocks": {
         "stat_1": {
           "type": "stat",
@@ -39,14 +39,19 @@
         "stat_1",
         "stat_2",
         "stat_3"
-      ]
+      ],
+      "settings": {
+        "headline_part1": "MDB INDUSTRIAL",
+        "headline_part2": "RESERVE",
+        "tagline": "DISTRIBUCIÓN MAYORISTA DE BEBIDAS",
+        "button_catalog_label": "VER CATÁLOGO",
+        "catalog_link": "#catalogo",
+        "button_secondary_label": "CONOCER MÁS",
+        "secondary_link": "#beneficios"
+      }
     },
     "benefits": {
       "type": "benefits",
-      "settings": {
-        "title_part1": "¿POR QUÉ",
-        "title_part2": "ELEGIRNOS?"
-      },
       "blocks": {
         "benefit_1": {
           "type": "benefit",
@@ -104,7 +109,11 @@
         "benefit_4",
         "benefit_5",
         "benefit_6"
-      ]
+      ],
+      "settings": {
+        "title_part1": "¿POR QUÉ",
+        "title_part2": "ELEGIRNOS?"
+      }
     },
     "featured_collection": {
       "type": "featured-collection",
@@ -117,10 +126,7 @@
     },
     "contact_form": {
       "type": "contact-form",
-      "settings": {
-        "heading": "HABLEMOS DE NEGOCIOS",
-        "text": "Completá el formulario para que un ejecutivo de cuentas se ponga en contacto a la brevedad."
-      }
+      "settings": {}
     }
   },
   "order": [
