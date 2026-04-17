@@ -9,11 +9,14 @@
 
   <div class="container">
     <header class="collection-header animate-on-scroll">
-      <h1 class="section-title">NUESTRO <span>CATÁLOGO</span></h1>
+      <h1 class="section-title">
+        {%- if collection.handle == 'all' -%}
+          NUESTRO <span>CATÁLOGO</span>
+        {%- else -%}
+          CATEGORÍA: <span>{{ collection.title | escape }}</span>
+        {%- endif -%}
+      </h1>
       <div class="divider"></div>
-      {%- if collection.description != blank -%}
-        <div class="collection-description">{{ collection.description }}</div>
-      {%- endif -%}
     </header>
 
     <div class="collection-layout">
@@ -24,15 +27,15 @@
             <h3 class="filter-title">BEBIDAS</h3>
             <ul class="filter-list">
               <li>
-                <a href="/collections/all" class="{% if collection.handle == 'all' or collection.handle == blank %}active{% endif %}">
+                <a href="/collections/all" class="{% if collection.handle == 'all' %}active{% endif %}">
                   <span>Todos los productos</span>
-                  <span class="count">{{ shop.products_count }}</span>
                 </a>
               </li>
               {%- for product_type in shop.types -%}
                 {%- if product_type != blank -%}
+                  {%- assign type_url = product_type | url_for_type -%}
                   <li>
-                    <a href="{{ product_type | url_for_type }}" class="{% if collection.current_type == product_type %}active{% endif %}">
+                    <a href="{{ type_url }}" class="{% if collection.current_type == product_type %}active{% endif %}">
                       <span>{{ product_type }}</span>
                     </a>
                   </li>
@@ -42,8 +45,8 @@
           </div>
 
           <div class="filter-group industrial-banner">
-            <h3 class="filter-title">SOPORTE B2B</h3>
-            <p>Atención directa por WhatsApp para pedidos de gran volumen.</p>
+            <h3 class="filter-title">B2B EXPRESS</h3>
+            <p>Soporte mayorista inmediato vía WhatsApp.</p>
             <a href="https://wa.me/5491100000000" class="btn-sidebar-wa">
               HABLAR CON ASESOR
             </a>
@@ -54,30 +57,28 @@
       <!-- Grid Wrap -->
       <div class="collection-grid-wrap" id="CollectionSection">
         <div class="collection-grid" id="ProductGrid">
-          {%- paginate collection.products by 40 -%}
-            {%- assign has_products = false -%}
-            
-            {%- for product in collection.products -%}
-              {%- assign has_products = true -%}
-              <div class="product-grid-item">
-                {% render 'product-card', product: product, show_vendor: true %}
-              </div>
-            {%- endfor -%}
+          {%- liquid
+             assign items_per_page = 40
+             # Robust collection target
+             assign target_products = collection.products
+             if collection.handle == 'all' and collection.products_count == 0
+                assign target_products = collections.all.products
+             endif
+          -%}
 
-            {%- if has_products == false -%}
-              {%- if collection.handle == 'all' or collection.handle == blank -%}
-                {%- for product in collections.all.products limit: 40 -%}
-                   <div class="product-grid-item">
-                    {% render 'product-card', product: product, show_vendor: true %}
-                  </div>
-                {%- endfor -%}
-              {%- else -%}
-                <div class="collection-empty">
-                  <span class="empty-emoji">🔍</span>
-                  <p>No encontramos productos en esta categoría.</p>
-                  <a href="/collections/all" class="btn-primary">VER TODO</a>
+          {%- paginate target_products by items_per_page -%}
+            {%- if target_products.size > 0 -%}
+              {%- for product in target_products -%}
+                <div class="product-grid-item">
+                  {% render 'product-card', product: product, show_vendor: true %}
                 </div>
-              {%- endif -%}
+              {%- endfor -%}
+            {%- else -%}
+              <div class="collection-empty">
+                <span class="empty-emoji">🔍</span>
+                <p>No encontramos bultos disponibles en esta categoría.</p>
+                <a href="/collections/all" class="btn-primary">VER TODO EL CATÁLOGO</a>
+              </div>
             {%- endif -%}
 
             {%- if paginate.pages > 1 -%}
@@ -110,7 +111,7 @@
              <li><a href="/collections/all" class="{% if collection.handle == 'all' %}active{% endif %}">Todos los productos</a></li>
              {%- for product_type in shop.types -%}
                {%- if product_type != blank -%}
-                 <li><a href="{{ product_type | url_for_type }}" class="{% if collection.current_type == product_type %}active{% endif %}">{{ product_type }}</a></li>
+                 <li><a href="{{ product_type | url_for_type }}">{{ product_type }}</a></li>
                {%- endif -%}
              {%- endfor -%}
           </ul>
@@ -121,161 +122,33 @@
 </section>
 
 <style>
-.collection-main { padding: 120px 0 80px; background: #080808; position: relative; }
-.collection-header { text-align: center; margin-bottom: 60px; }
-.collection-description { color: rgba(255,255,255,0.6); max-width: 600px; margin: 0 auto; font-size: 0.95rem; }
+.collection-main { padding: 100px 0 80px; background: #080808; position: relative; }
+.collection-header { text-align: center; margin-bottom: 50px; }
 
-/* Mobile Bar */
-.mobile-filters-bar { display: none; margin-bottom: 20px; }
-.btn-filters-open {
-  width: 100%;
-  background: #111;
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
-  padding: 15px;
-  font-family: var(--font-heading);
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border-radius: var(--radius-md);
-}
-
-.collection-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 40px;
-}
-
-/* Sidebar Styles */
-.sidebar-inner {
-  position: sticky;
-  top: 120px;
-  background: #111;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: var(--radius-lg);
-  padding: 30px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-
-.filter-group { margin-bottom: 40px; }
-.filter-title {
-  font-family: var(--font-heading);
-  font-size: 0.75rem;
-  letter-spacing: 3px;
-  color: var(--color-primary);
-  margin-bottom: 25px;
-  text-transform: uppercase;
-  border-left: 2px solid var(--color-primary);
-  padding-left: 15px;
-}
-
-.filter-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; }
-.filter-list a {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: rgba(255,255,255,0.5);
-  font-size: 0.9rem;
-  padding: 10px 12px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-}
-.filter-list a:hover {
-  background: rgba(255, 255, 255, 0.03);
-  color: white;
-  padding-left: 18px;
-}
-.filter-list a.active {
-  background: rgba(204, 0, 0, 0.1);
-  color: var(--color-primary);
-  font-weight: 600;
-  border-right: 2px solid var(--color-primary);
-}
-
-.industrial-banner {
-  background: rgba(204,0,0,0.05);
-  border: 1px dashed rgba(204,0,0,0.3);
-  padding: 20px;
-  border-radius: 8px;
-}
-.industrial-banner p { font-size: 0.8rem; color: rgba(255,255,255,0.4); line-height: 1.5; margin-bottom: 15px; }
-.btn-sidebar-wa {
-  display: block;
-  text-align: center;
-  background: var(--color-primary);
-  color: white;
-  padding: 10px;
-  font-size: 0.7rem;
-  font-family: var(--font-heading);
-  letter-spacing: 1px;
-  border-radius: 4px;
-}
+/* Desktop Sidebar */
+.collection-layout { display: grid; grid-template-columns: 260px 1fr; gap: 40px; }
+.sidebar-inner { position: sticky; top: 120px; background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-lg); padding: 25px; }
+.filter-title { font-family: var(--font-heading); font-size: 0.7rem; letter-spacing: 3px; color: var(--color-primary); margin-bottom: 20px; text-transform: uppercase; border-left: 2px solid var(--color-primary); padding-left: 12px; }
+.filter-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.filter-list a { display: flex; justify-content: space-between; align-items: center; color: rgba(255,255,255,0.4); font-size: 0.85rem; padding: 10px 12px; border-radius: 4px; transition: all 0.2s ease; text-decoration: none; font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; }
+.filter-list a:hover { background: rgba(255,255,255,0.03); color: #fff; }
+.filter-list a.active { background: rgba(204,0,0,0.1); color: var(--color-primary); font-weight: 700; border-right: 2px solid var(--color-primary); }
 
 /* Grid Layout */
-#ProductGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-}
-
+#ProductGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; min-height: 600px; }
 @media (min-width: 768px) { #ProductGrid { grid-template-columns: repeat(3, 1fr); } }
 @media (min-width: 1200px) { #ProductGrid { grid-template-columns: repeat(4, 1fr); } }
 @media (min-width: 1440px) { #ProductGrid { grid-template-columns: repeat(5, 1fr); } }
 
-/* Drawer Styles */
-.filter-drawer {
-  position: fixed;
-  inset: 0;
-  z-index: 5000;
-  visibility: hidden;
-  transition: all 0.4s ease;
-}
-.filter-drawer.active { visibility: visible; }
-.filter-drawer-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(5px);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-.filter-drawer.active .filter-drawer-overlay { opacity: 1; }
-.filter-drawer-content {
-  position: absolute;
-  top: 0;
-  right: -100%;
-  width: 85%;
-  height: 100%;
-  background: #111;
-  padding: 30px;
-  transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.filter-drawer.active .filter-drawer-content { right: 0; }
+/* Industrial Empty State */
+.collection-empty { grid-column: 1 / -1; text-align: center; padding: 100px 20px; border: 1px dashed rgba(255,255,255,0.1); border-radius: var(--radius-lg); }
+.empty-emoji { font-size: 3rem; display: block; margin-bottom: 20px; opacity: 0.5; }
+.collection-empty p { color: rgba(255,255,255,0.5); font-family: var(--font-heading); letter-spacing: 1px; margin-bottom: 30px; }
 
-/* Loading Overlay */
-.catalog-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.loading--active .catalog-loading-overlay { opacity: 1; pointer-events: auto; }
-
-/* Responsive adjustments */
+/* Mobile logic stays separate */
 @media (max-width: 1024px) {
   .collection-layout { grid-template-columns: 1fr; }
   .collection-sidebar { display: none; }
-  .mobile-filters-bar { display: block; }
+  .mobile-filters-bar { display: block; margin-bottom: 30px; }
 }
 </style>
