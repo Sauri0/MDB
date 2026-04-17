@@ -14,7 +14,6 @@ class CatalogAJAX {
     this.sectionId = sectionElement ? sectionElement.getAttribute('data-section-id') : null;
     
     this.init();
-    this.initQuickView();
   }
 
   init() {
@@ -49,46 +48,7 @@ class CatalogAJAX {
     });
   }
 
-  initQuickView() {
-    // Robust delegation with multiple triggers
-    document.addEventListener('click', (e) => {
-      const target = e.target;
-      const btn = target.closest('.js-qv-trigger, .btn-quick-view, .product-image-container');
-      const card = target.closest('.js-qv-trigger');
-      
-      if (!card || !btn) return;
-      
-      e.preventDefault();
-      e.stopPropagation();
 
-      // Check if MDBQuickView is available
-      if (window.MDBQuickView) {
-        this.openQuickView(card);
-      } else {
-        console.warn('MDB: QuickView system not ready, retrying...');
-        setTimeout(() => {
-          if (window.MDBQuickView) this.openQuickView(card);
-        }, 500);
-      }
-    });
-  }
-
-  openQuickView(card) {
-    try {
-      const bulk = JSON.parse(card.dataset.bulk || '[]');
-      window.MDBQuickView.open({
-        name:         card.dataset.title || '',
-        category:     card.dataset.category || '',
-        presentation: card.dataset.presentation || '',
-        description:  card.dataset.description || '',
-        image:        card.dataset.image || '',
-        variantId:    card.dataset.variantId || '',
-        bulkPricing:  bulk
-      });
-    } catch(err) {
-      console.error('MDB QuickView Error:', err);
-    }
-  }
 
   async updateCatalog(url, updateHistory = true) {
     if (!this.sectionId || !this.grid) {
