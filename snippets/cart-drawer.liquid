@@ -179,7 +179,8 @@
 
 .cart-drawer-footer {
   padding: var(--space-xl);
-  background: var(--color-surface);
+  padding-bottom: 50px;
+  background: #111;
   border-top: 1px solid var(--color-border);
 }
 
@@ -193,34 +194,40 @@
 .js-cart-total-price { color: var(--color-primary); }
 
 .cart-tax-info {
-  font-size: 0.75rem;
-  color: var(--color-text-dim);
-  margin-bottom: var(--space-lg);
+  font-size: 0.7rem;
+  color: #444;
+  margin-bottom: 25px;
+}
+
+.cart-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .btn-checkout {
+  display: block;
+  text-align: center;
   width: 100%;
   background: white;
   color: black;
   font-family: var(--font-heading);
-  font-weight: 700;
-  padding: 1rem;
-  border-radius: var(--radius-sm);
+  font-weight: 800;
+  padding: 1.1rem;
+  border-radius: 4px;
   letter-spacing: 2px;
-  margin-bottom: 10px;
+  text-decoration: none;
+  transition: all 0.3s ease;
 }
+.btn-checkout:hover { background: #eee; transform: translateY(-2px); }
 
-.btn-whatsapp-cart {
-  width: 100%;
-  background: var(--color-whatsapp);
-  color: white;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  padding: 1rem;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+.cart-checkout-help {
+  font-size: 0.65rem;
+  color: #666;
+  text-align: center;
+  line-height: 1.4;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 </style>
