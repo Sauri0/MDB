@@ -135,11 +135,14 @@ class CatalogAJAX {
                 opacity: 1, 
                 y: 0, 
                 stagger: 0.04, 
-                duration: 0.6, 
-                ease: "power3.out",
+                duration: 0.4, 
+                ease: "power2.out",
                 clearProps: "all"
               }
             );
+          } else {
+             // Fallback reveal if grid is empty or items missed
+             this.grid.style.opacity = '1';
           }
 
           if (updateHistory) history.pushState({ url }, '', url);
@@ -163,11 +166,20 @@ class CatalogAJAX {
 
   updateActiveLinks(currentUrl) {
     const links = document.querySelectorAll('.filter-list a');
-    const currentPath = new URL(currentUrl, window.location.origin).pathname;
+    const currentLoc = new URL(currentUrl, window.location.origin);
+    
     links.forEach(link => {
       const linkParsed = new URL(link.href, window.location.origin);
-      if (linkParsed.pathname === currentPath) link.classList.add('active');
-      else link.classList.remove('active');
+      
+      // Compare both pathname AND search (important for /collections/types?q=...)
+      const isSamePath = linkParsed.pathname === currentLoc.pathname;
+      const isSameSearch = linkParsed.search === currentLoc.search;
+      
+      if (isSamePath && isSameSearch) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
     });
   }
 }
