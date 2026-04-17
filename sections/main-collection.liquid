@@ -1,3 +1,5 @@
+{{ 'component-product-card.css' | asset_url | stylesheet_tag }}
+
 <section id="catalogo-completo" class="section collection-main" data-section-id="{{ section.id }}">
   <!-- Mobile Filter Opener -->
   <div class="mobile-filters-bar container">
@@ -140,10 +142,60 @@
 .empty-emoji { font-size: 3rem; display: block; margin-bottom: 20px; opacity: 0.5; }
 .collection-empty p { color: rgba(255,255,255,0.5); font-family: var(--font-heading); letter-spacing: 1px; margin-bottom: 30px; }
 
+/* Filter Drawer Styles */
+.filter-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.filter-drawer.is-open { visibility: visible; }
+.filter-drawer-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.filter-drawer.is-open .filter-drawer-overlay { opacity: 1; }
+.filter-drawer-content {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 85%;
+  max-width: 320px;
+  height: 100%;
+  background: #111;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.filter-drawer.is-open .filter-drawer-content { transform: translateX(0); }
+.filter-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 20px;
+}
+.filter-drawer-header h3 { font-family: var(--font-heading); letter-spacing: 2px; }
+.js-close-filters { font-size: 2rem; line-height: 1; color: var(--color-primary); }
+
 /* Mobile logic stays separate */
 @media (max-width: 1024px) {
   .collection-layout { grid-template-columns: 1fr; }
   .collection-sidebar { display: none; }
   .mobile-filters-bar { display: block; margin-bottom: 30px; }
+}
+
+/* Desktop Fix: Force hide drawer elements that might leak */
+@media (min-width: 1025px) {
+  .filter-drawer { display: none !important; }
+  .mobile-filters-bar { display: none !important; }
 }
 </style>
