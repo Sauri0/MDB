@@ -14,9 +14,10 @@
   endif
 -%}
 
-<div class="product-card animate-on-scroll js-qv-card"
+<div class="product-card animate-on-scroll js-qv-trigger"
   data-product-id="{{ product.id }}"
   data-variant-id="{{ product.variants.first.id }}"
+  data-handle="{{ product.handle }}"
   data-title="{{ product.title | escape }}"
   data-vendor="{{ product.vendor | escape }}"
   data-description="{{ product.description | strip_html | truncate: 200 | escape }}"
@@ -48,7 +49,7 @@
     </div>
 
     <!-- Glassmorphism hover overlay -->
-    <div class="product-card-overlay">
+    <div class="product-card-overlay js-qv-trigger" data-handle="{{ product.handle }}">
       <div class="product-specs-mini">
         <div class="spec-item"><span class="spec-icon">📦</span> Stock Inmediato</div>
         <div class="spec-item"><span class="spec-icon">🚚</span> Envío 24hs</div>
@@ -56,7 +57,7 @@
           <div class="spec-item"><span class="spec-icon">💰</span> Escala B2B</div>
         {%- endif -%}
       </div>
-      <button class="btn-quick-view">VER DETALLE</button>
+      <button class="btn-quick-view js-qv-trigger" data-handle="{{ product.handle }}">VER DETALLE</button>
     </div>
   </div>
 
@@ -78,7 +79,7 @@
   </div>
 
   <div class="product-actions">
-    <button class="btn-add-cart js-qv-open-btn">
+    <button class="btn-add-cart js-qv-trigger" data-handle="{{ product.handle }}">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
       VER DETALLE Y PRECIO
     </button>
