@@ -273,6 +273,18 @@
 
 .bulk-row {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.bulk-row.is-active-scale {
+  background: rgba(204, 0, 0, 0.15);
+  border-left: 3px solid var(--color-primary);
+  color: white;
+}
+
+.bulk-row.is-active-scale .bulk-price-highlight {
+  color: var(--color-primary);
+  text-shadow: 0 0 10px rgba(204, 0, 0, 0.4);
 }
 
 .bulk-price-highlight {

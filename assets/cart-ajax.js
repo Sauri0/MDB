@@ -1,6 +1,6 @@
 /**
- * MDB Shopify — AJAX Cart Engine
- * Manages cart state, drawer UI, and header synchronization.
+ * MDB Shopify — AJAX Cart Engine v2
+ * High-Fidelity B2B Logic & Scale Feedback
  */
 
 window.ShopifyCart = (function() {
@@ -15,10 +15,13 @@ window.ShopifyCart = (function() {
     qvClose: '.js-qv-close'
   };
 
+  let currentProduct = null;
+
   function init() {
     document.addEventListener('click', (e) => {
       if (e.target.closest(selectors.closeBtn)) close();
       if (e.target.closest(selectors.qvClose)) closeQuickView();
+      if (e.target.closest('.js-clear-cart')) clearCart();
       
       if (e.target.closest('.js-cart-trigger')) {
         e.preventDefault();
@@ -38,19 +41,28 @@ window.ShopifyCart = (function() {
       // Quantity adjustments in Modal
       if (e.target.closest('.js-qv-minus')) {
         const input = document.querySelector('.js-qv-qty-input');
-        if (input.value > 1) input.value = parseInt(input.value) - 1;
+        if (input.value > 1) {
+          input.value = parseInt(input.value) - 1;
+          updateQvHighlights(input.value);
+        }
       }
       if (e.target.closest('.js-qv-plus')) {
         const input = document.querySelector('.js-qv-qty-input');
         input.value = parseInt(input.value) + 1;
+        updateQvHighlights(input.value);
       }
 
       // Add to cart from Modal
       const qvAddBtn = e.target.closest('.js-qv-add');
-      if (qvAddBtn) {
+      if (qvAddBtn && currentProduct) {
         const id = qvAddBtn.dataset.variantId;
         const qty = parseInt(document.querySelector('.js-qv-qty-input').value);
-        addItem(id, qty);
+        const unitPrice = getPriceForQty(qty, currentProduct.bulk_pricing);
+        
+        addItem(id, qty, { 
+          'Unit Price': unitPrice,
+          'Presentación': currentProduct.presentation || 'Industrial'
+        });
         closeQuickView();
       }
 
@@ -58,17 +70,55 @@ window.ShopifyCart = (function() {
       if (e.target.closest('.js-qty-plus')) updateQuantity(e.target.closest('[data-id]').dataset.id, 1);
     });
 
-    // Capture "Add to Cart" clicks
-    document.addEventListener('click', (e) => {
-      const addBtn = e.target.closest('.js-add-to-cart');
-      if (addBtn) {
-        e.preventDefault();
-        const variantId = addBtn.dataset.variantId;
-        addItem(variantId, 1);
+    // Capture Manual Input in Modal
+    document.addEventListener('input', (e) => {
+      if (e.target.classList.contains('js-qv-qty-input')) {
+        updateQvHighlights(e.target.value);
       }
     });
 
     refresh();
+  }
+
+  function getPriceForQty(qty, scales) {
+    if (!scales || !scales.length) return 0;
+    let price = scales[0].unitPrice || 0;
+    scales.forEach(s => {
+      if (qty >= (s.minQty || 0)) price = s.unitPrice;
+    });
+    return price;
+  }
+
+  function updateQvHighlights(qty) {
+    const qvQty = parseInt(qty) || 1;
+    const rows = document.querySelectorAll('.bulk-row');
+    const priceDisplay = document.querySelector('.qv-price');
+    
+    if (!currentProduct || !currentProduct.bulk_pricing) return;
+
+    let activeTierIndex = 0;
+    currentProduct.bulk_pricing.forEach((tier, index) => {
+      if (qvQty >= tier.minQty) activeTierIndex = index;
+    });
+
+    rows.forEach((row, index) => {
+      if (index === activeTierIndex) {
+        if (!row.classList.contains('is-active-scale')) {
+          row.classList.add('is-active-scale');
+          // Animation feedback
+          gsap.fromTo(row, { x: 0 }, { x: 5, duration: 0.1, yoyo: true, repeat: 3 });
+          if (priceDisplay) {
+            gsap.fromTo(priceDisplay, { scale: 1 }, { scale: 1.1, color: '#CC0000', duration: 0.2, yoyo: true, repeat: 1 });
+          }
+        }
+      } else {
+        row.classList.remove('is-active-scale');
+      }
+    });
+
+    // Update the large price display
+    const currentPrice = getPriceForQty(qvQty, currentProduct.bulk_pricing);
+    if (priceDisplay) priceDisplay.innerText = Shopify.formatMoney(currentPrice * 100);
   }
 
   function open() {
@@ -81,12 +131,20 @@ window.ShopifyCart = (function() {
     document.body.style.overflow = '';
   }
 
-  async function addItem(id, qty = 1) {
+  async function clearCart() {
+    if (!confirm('¿Deseas vaciar todo el pedido?')) return;
+    try {
+      await fetch('/cart/clear.js', { method: 'POST' });
+      await refresh();
+    } catch (err) { console.error('Error clearing cart', err); }
+  }
+
+  async function addItem(id, qty = 1, properties = {}) {
     try {
       const response = await fetch('/cart/add.js', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: [{ id, quantity: qty }] })
+        body: JSON.stringify({ items: [{ id, quantity: qty, properties }] })
       });
       if (response.ok) {
         await refresh();
@@ -134,35 +192,43 @@ window.ShopifyCart = (function() {
       return;
     }
 
-    container.innerHTML = cart.items.map(item => `
-      <div class="cart-item" data-id="${item.key}">
-        <div class="cart-item-image">
-          <img src="${item.image}" alt="${item.title}">
-        </div>
-        <div class="cart-item-info">
-          <h3>${item.product_title}</h3>
-          <p class="cart-item-price">${Shopify.formatMoney(item.price)}</p>
-          <div class="cart-item-qty">
-            <button class="qty-btn js-qty-minus">-</button>
-            <span class="qty-val">${item.quantity}</span>
-            <button class="qty-btn js-qty-plus">+</button>
+    let calculatedTotal = 0;
+
+    container.innerHTML = cart.items.map(item => {
+      // B2B Price Detection from Properties
+      let unitPrice = item.price;
+      if (item.properties && item.properties['Unit Price']) {
+        unitPrice = item.properties['Unit Price'] * 100;
+      }
+      
+      calculatedTotal += (unitPrice * item.quantity);
+
+      return `
+        <div class="cart-item" data-id="${item.key}">
+          <div class="cart-item-image">
+            <img src="${item.image}" alt="${item.title}">
+          </div>
+          <div class="cart-item-info">
+            <h3>${item.product_title}</h3>
+            ${item.properties['Presentación'] ? `<p class="cart-item-meta">${item.properties['Presentación']}</p>` : ''}
+            <p class="cart-item-price">${Shopify.formatMoney(unitPrice)}</p>
+            <div class="cart-item-qty">
+              <button class="qty-btn js-qty-minus">-</button>
+              <span class="qty-val">${item.quantity}</span>
+              <button class="qty-btn js-qty-plus">+</button>
+            </div>
           </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
 
-    totalEl.innerText = Shopify.formatMoney(cart.total_price);
+    totalEl.innerText = Shopify.formatMoney(calculatedTotal);
   }
 
   function updateHeader(cart) {
     const bubble = document.querySelector(selectors.bubble);
     if (!bubble) return;
-    
-    if (cart.item_count > 0) {
-      bubble.innerHTML = `<span class="header-cart-badge">${cart.item_count}</span>`;
-    } else {
-      bubble.innerHTML = '';
-    }
+    bubble.innerHTML = cart.item_count > 0 ? `<span class="header-cart-badge">${cart.item_count}</span>` : '';
   }
 
   async function openQuickView(handle, bulkData = null, presentation = '') {
@@ -176,10 +242,10 @@ window.ShopifyCart = (function() {
       const response = await fetch(`/products/${handle}.js`);
       const product = await response.json();
       
-      // Merge extra fields
       if (bulkData) product.bulk_pricing = JSON.parse(bulkData);
       if (presentation) product.presentation = presentation;
-
+      
+      currentProduct = product;
       renderQuickView(product);
     } catch (err) {
       console.error('Error loading Quick View', err);
@@ -189,17 +255,16 @@ window.ShopifyCart = (function() {
 
   function closeQuickView() {
     document.querySelector(selectors.qvModal).classList.remove('open');
+    currentProduct = null;
   }
 
   function renderQuickView(product) {
     const body = document.querySelector(selectors.qvBody);
     const variantId = product.variants[0].id;
     
-    // Fallback price logic for B2B
-    let basePriceStr = Shopify.formatMoney(product.price);
-    if (product.bulk_pricing && product.bulk_pricing.length > 0) {
-      basePriceStr = product.bulk_pricing[0].price;
-    }
+    let basePriceStr = product.bulk_pricing && product.bulk_pricing.length > 0 
+      ? product.bulk_pricing[0].price 
+      : Shopify.formatMoney(product.price);
 
     let bulkHtml = '';
     if (product.bulk_pricing && product.bulk_pricing.length > 0) {
@@ -207,12 +272,9 @@ window.ShopifyCart = (function() {
         <div class="qv-bulk-section">
           <h4 class="qv-section-title uppercase">Escala de Precios B2B</h4>
           <div class="qv-bulk-table">
-            <div class="bulk-header">
-              <span>Cantidad</span>
-              <span>Precio x Un.</span>
-            </div>
-            ${product.bulk_pricing.map(tier => `
-              <div class="bulk-row">
+            <div class="bulk-header"><span>Cantidad</span><span>Precio Un.</span></div>
+            ${product.bulk_pricing.map((tier, idx) => `
+              <div class="bulk-row ${idx === 0 ? 'is-active-scale' : ''}" data-min="${tier.minQty}">
                 <span>${tier.qty}</span>
                 <span class="bulk-price-highlight">${tier.price}</span>
               </div>
@@ -223,25 +285,20 @@ window.ShopifyCart = (function() {
     }
 
     body.innerHTML = `
-      <div class="qv-image-side">
-        <img src="${product.featured_image}" alt="${product.title}">
-      </div>
+      <div class="qv-image-side"><img src="${product.featured_image}" alt="${product.title}"></div>
       <div class="qv-info-side">
         <span class="qv-vendor uppercase">${product.vendor || 'MDB Industrial'} | ${product.presentation || '750ml'}</span>
         <h2 class="qv-title">${product.title}</h2>
         <p class="qv-price">${basePriceStr}</p>
-        
         <div class="qv-desc">${product.description || 'Sin descripción disponible.'}</div>
-        
         ${bulkHtml}
-        
         <div class="qv-actions">
           <div class="qv-qty-selector">
-            <button class="qty-btn js-qv-minus">-</button>
+            <button class="qty-btn js-qv-minus">−</button>
             <input type="number" class="qv-qty-input js-qv-qty-input" value="1" min="1">
             <button class="qty-btn js-qv-plus">+</button>
           </div>
-          <button class="btn-qv-add js-qv-add" data-variant-id="${variantId}">AGREGAR AL CARRITO</button>
+          <button class="btn-qv-add js-qv-add" data-variant-id="${variantId}">AGREGAR AL PEDIDO</button>
         </div>
       </div>
     `;
@@ -254,9 +311,7 @@ window.ShopifyCart = (function() {
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof Shopify === 'undefined') window.Shopify = {};
   if (!Shopify.formatMoney) {
-    Shopify.formatMoney = function(cents) {
-      return '$' + (cents / 100).toLocaleString('es-AR', { minimumFractionDigits: 2 });
-    };
+    Shopify.formatMoney = (cents) => '$' + (cents / 100).toLocaleString('es-AR', { minimumFractionDigits: 2 });
   }
   window.ShopifyCart.init();
 });

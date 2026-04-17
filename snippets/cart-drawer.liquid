@@ -2,7 +2,10 @@
   <div class="cart-drawer-overlay js-cart-close"></div>
   <div class="cart-drawer-inner">
     <div class="cart-drawer-header">
-      <h2 class="cart-drawer-title">TU <span>PEDIDO</span></h2>
+      <div class="cart-header-main">
+        <h2 class="cart-drawer-title">TU <span>PEDIDO</span></h2>
+        <button class="btn-clear-cart js-clear-cart" title="Vaciar todo el carrito">VACIAR</button>
+      </div>
       <button class="cart-drawer-close js-cart-close" aria-label="Cerrar">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
@@ -96,6 +99,31 @@
   transition: color var(--transition-fast);
 }
 .cart-drawer-close:hover { color: var(--color-primary); }
+
+.cart-header-main {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.btn-clear-cart {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--color-text-dim);
+  font-size: 0.65rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  font-family: var(--font-heading);
+  transition: all 0.3s ease;
+}
+
+.btn-clear-cart:hover {
+  background: rgba(204,0,0,0.1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
 
 .cart-drawer-items {
   flex: 1;
