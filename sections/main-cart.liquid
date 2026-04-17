@@ -1,7 +1,181 @@
-<div class="blank-section">Carrito Minimal</div>
+{{ 'component-cart.css' | asset_url | stylesheet_tag }}
+
+<section class="cart-main-section container animate-on-scroll">
+  <div class="cart-header">
+    <h1 class="cart-title">REVISÁ TU <span>PEDIDO INDUSTRIAL</span></h1>
+    <div class="divider"></div>
+  </div>
+
+  {%- if cart.item_count > 0 -%}
+    <div class="cart-grid">
+      <!-- Items Area -->
+      <div class="cart-items-column">
+        <div class="cart-items-table">
+          {%- for item in cart.items -%}
+            <div class="cart-page-item" data-key="{{ item.key }}" data-product-id="{{ item.product_id }}">
+              <div class="item-img">
+                <img src="{{ item.image | img_url: '200x200' }}" alt="{{ item.title }}">
+              </div>
+              <div class="item-details">
+                <span class="item-category">{{ item.vendor | escape }}</span>
+                <h3 class="item-name">{{ item.product_title }}</h3>
+                {%- if item.properties['Presentación'] -%}
+                  <p class="item-presentation">{{ item.properties['Presentación'] }}</p>
+                {%- endif -%}
+                
+                <div class="item-qty-row">
+                  <div class="qty-control">
+                    <button class="qty-btn" onclick="updateCartQty('{{ item.key }}', {{ item.quantity | minus: 1 }})">−</button>
+                    <input type="number" value="{{ item.quantity }}" readonly>
+                    <button class="qty-btn" onclick="updateCartQty('{{ item.key }}', {{ item.quantity | plus: 1 }})">+</button>
+                  </div>
+                  <button class="btn-remove" onclick="updateCartQty('{{ item.key }}', 0)">Eliminar</button>
+                </div>
+              </div>
+              <div class="item-price-col">
+                <span class="item-unit-price js-b2b-unit-price" data-qty="{{ item.quantity }}">Calculando...</span>
+                <span class="item-subtotal js-b2b-subtotal">$0.00</span>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <!-- Summary Area -->
+      <aside class="cart-summary-column">
+        <div class="summary-card">
+          <h3 class="summary-title">RESUMEN DE COMPRA</h3>
+          
+          <div class="summary-rows">
+            <div class="summary-row">
+              <span>Subtotal (Sin descuentos)</span>
+              <span class="js-raw-subtotal">$0.00</span>
+            </div>
+            <div class="summary-row highlight">
+              <span>Descuento B2B Aplicado</span>
+              <span class="js-b2b-savings">-$0.00</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-row total">
+              <span>TOTAL A PAGAR</span>
+              <span class="js-final-total">$0.00</span>
+            </div>
+          </div>
+
+          <!-- Checkout Flow Selectors -->
+          <div class="checkout-method-selector">
+            <p class="selector-label">¿CÓMO DESEÁS FINALIZAR?</p>
+            <div class="method-options">
+              <label class="method-option active">
+                <input type="radio" name="payment_method" value="card" checked>
+                <div class="option-content">
+                  <span class="option-title">PAGO ONLINE</span>
+                  <span class="option-desc">Tarjeta de Crédito / Débito</span>
+                </div>
+              </label>
+              <label class="method-option">
+                <input type="radio" name="payment_method" value="whatsapp">
+                <div class="option-content">
+                  <span class="option-title">WHATSAPP</span>
+                  <span class="option-desc">Trato Directo y Escalas B2B</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="checkout-actions">
+            <button class="btn-primary-action js-btn-main-action">FINALIZAR COMPRA</button>
+            <a href="/collections/catalogo" class="btn-secondary-action">SEGUIR COMPRANDO</a>
+          </div>
+          
+          <p class="summary-legal">Al finalizar la compra, aceptas nuestros términos y condiciones industriales.</p>
+        </div>
+      </aside>
+    </div>
+  {%- else -%}
+    <div class="cart-empty-state">
+      <span class="empty-emoji">🛒</span>
+      <h2>Tu carrito está vacío</h2>
+      <p>Explora nuestro catálogo para sumar productos industriales.</p>
+      <a href="/collections/catalogo" class="btn-primary">VER CATÁLOGO</a>
+    </div>
+  {%- endif -%}
+</section>
+
+<script>
+  // Dynamic B2B Recalculation logic for main cart
+  async function updateCartQty(key, qty) {
+    await fetch('/cart/change.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: key, quantity: qty })
+    });
+    window.location.reload();
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const rawCartResponse = await fetch('/cart.js');
+    const cart = await rawCartResponse.json();
+    
+    // Setup Action Button
+    const actionBtn = document.querySelector('.js-btn-main-action');
+    const methodRadios = document.querySelectorAll('input[name="payment_method"]');
+    
+    function updateActionButton() {
+      const selected = document.querySelector('input[name="payment_method"]:checked').value;
+      const options = document.querySelectorAll('.method-option');
+      options.forEach(opt => opt.classList.remove('active'));
+      document.querySelector(`input[value="${selected}"]`).closest('.method-option').classList.add('active');
+
+      if (selected === 'card') {
+        actionBtn.innerText = 'PAGAR CON TARJETA';
+        actionBtn.style.background = '#FFFFFF';
+        actionBtn.style.color = '#000000';
+        actionBtn.onclick = () => window.location.href = '/checkout';
+      } else {
+        actionBtn.innerText = 'PEDIR POR WHATSAPP';
+        actionBtn.style.background = '#25D366';
+        actionBtn.style.color = '#FFFFFF';
+        actionBtn.onclick = () => {
+          const items = cart.items.map(i => `- ${i.product_title} (${i.quantity} un.)`).join('\n');
+          const msg = encodeURIComponent(`Hola! Quiero finalizar mi pedido industrial:\n\n${items}\n\nTotal estimado: ${document.querySelector('.js-final-total').innerText}`);
+          window.open(`https://wa.me/5491100000000?text=${msg}`, '_blank');
+        };
+      }
+    }
+
+    methodRadios.forEach(r => r.addEventListener('change', updateActionButton));
+    updateActionButton();
+
+    // Recalculate B2B Prices
+    let finalTotal = 0;
+    const items = document.querySelectorAll('.cart-page-item');
+    
+    items.forEach(el => {
+      const key = el.dataset.key;
+      const item = cart.items.find(i => i.key === key);
+      let unitPrice = item.price / 100;
+      
+      // Try to find Unit Price from properties
+      if (item.properties && item.properties['Unit Price']) {
+        unitPrice = parseFloat(item.properties['Unit Price']);
+      }
+      
+      const subtotal = unitPrice * item.quantity;
+      finalTotal += subtotal;
+      
+      el.querySelector('.js-b2b-unit-price').innerText = '$' + unitPrice.toLocaleString('es-AR');
+      el.querySelector('.js-b2b-subtotal').innerText = '$' + subtotal.toLocaleString('es-AR');
+    });
+
+    document.querySelector('.js-final-total').innerText = '$' + finalTotal.toLocaleString('es-AR');
+    document.querySelector('.js-raw-subtotal').innerText = '$' + finalTotal.toLocaleString('es-AR');
+  });
+</script>
 
 {% schema %}
 {
-  "name": "Carrito Principal"
+  "name": "B2B Main Cart",
+  "settings": []
 }
 {% endschema %}
