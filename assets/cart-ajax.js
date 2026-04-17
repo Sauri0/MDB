@@ -29,7 +29,10 @@ window.ShopifyCart = (function() {
       const qvTrigger = e.target.closest('.js-qv-trigger');
       if (qvTrigger) {
         e.preventDefault();
-        openQuickView(qvTrigger.dataset.handle);
+        const card = qvTrigger.closest('.product-card') || qvTrigger;
+        const bulkData = card.dataset.bulk;
+        const presentation = card.dataset.presentation;
+        openQuickView(qvTrigger.dataset.handle, bulkData, presentation);
       }
 
       // Quantity adjustments in Modal
@@ -162,7 +165,7 @@ window.ShopifyCart = (function() {
     }
   }
 
-  async function openQuickView(handle) {
+  async function openQuickView(handle, bulkData = null, presentation = '') {
     const modal = document.querySelector(selectors.qvModal);
     const body = document.querySelector(selectors.qvBody);
     
@@ -172,6 +175,11 @@ window.ShopifyCart = (function() {
     try {
       const response = await fetch(`/products/${handle}.js`);
       const product = await response.json();
+      
+      // Merge extra fields
+      if (bulkData) product.bulk_pricing = JSON.parse(bulkData);
+      if (presentation) product.presentation = presentation;
+
       renderQuickView(product);
     } catch (err) {
       console.error('Error loading Quick View', err);
@@ -185,19 +193,47 @@ window.ShopifyCart = (function() {
 
   function renderQuickView(product) {
     const body = document.querySelector(selectors.qvBody);
-    const formattedPrice = Shopify.formatMoney(product.price);
     const variantId = product.variants[0].id;
+    
+    // Fallback price logic for B2B
+    let basePriceStr = Shopify.formatMoney(product.price);
+    if (product.bulk_pricing && product.bulk_pricing.length > 0) {
+      basePriceStr = product.bulk_pricing[0].price;
+    }
+
+    let bulkHtml = '';
+    if (product.bulk_pricing && product.bulk_pricing.length > 0) {
+      bulkHtml = `
+        <div class="qv-bulk-section">
+          <h4 class="qv-section-title uppercase">Escala de Precios B2B</h4>
+          <div class="qv-bulk-table">
+            <div class="bulk-header">
+              <span>Cantidad</span>
+              <span>Precio x Un.</span>
+            </div>
+            ${product.bulk_pricing.map(tier => `
+              <div class="bulk-row">
+                <span>${tier.qty}</span>
+                <span class="bulk-price-highlight">${tier.price}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
 
     body.innerHTML = `
       <div class="qv-image-side">
         <img src="${product.featured_image}" alt="${product.title}">
       </div>
       <div class="qv-info-side">
-        <span class="qv-vendor uppercase">${product.vendor || 'MDB Industrial'}</span>
+        <span class="qv-vendor uppercase">${product.vendor || 'MDB Industrial'} | ${product.presentation || '750ml'}</span>
         <h2 class="qv-title">${product.title}</h2>
-        <p class="qv-price">${formattedPrice}</p>
+        <p class="qv-price">${basePriceStr}</p>
         
         <div class="qv-desc">${product.description || 'Sin descripción disponible.'}</div>
+        
+        ${bulkHtml}
         
         <div class="qv-actions">
           <div class="qv-qty-selector">

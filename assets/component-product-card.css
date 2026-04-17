@@ -235,7 +235,52 @@
   box-shadow: 0 5px 15px rgba(204, 0, 0, 0.4);
 }
 
-/* Responsive Overrides */
+/* Quick View B2B Scales */
+.qv-bulk-section {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.qv-section-title {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--color-primary);
+  margin-bottom: 15px;
+}
+
+.qv-bulk-table {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.bulk-header, .bulk-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 20px;
+  font-size: 0.85rem;
+}
+
+.bulk-header {
+  background: rgba(255, 255, 255, 0.05);
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.bulk-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bulk-price-highlight {
+  color: #FFFFFF;
+  font-weight: 800;
+  font-family: var(--font-display);
+}
+
 @media (max-width: 768px) {
   .product-image-container { height: 180px; }
   .product-title { font-size: 0.9rem; }
