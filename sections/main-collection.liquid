@@ -59,16 +59,11 @@
         <div class="collection-grid" id="ProductGrid">
           {%- liquid
              assign items_per_page = 40
-             # Robust collection target
-             assign target_products = collection.products
-             if collection.handle == 'all' and collection.products_count == 0
-                assign target_products = collections.all.products
-             endif
           -%}
 
-          {%- paginate target_products by items_per_page -%}
-            {%- if target_products.size > 0 -%}
-              {%- for product in target_products -%}
+          {%- paginate collection.products by items_per_page -%}
+            {%- if collection.products.size > 0 -%}
+              {%- for product in collection.products -%}
                 <div class="product-grid-item">
                   {% render 'product-card', product: product, show_vendor: true %}
                 </div>
