@@ -124,7 +124,7 @@ window.ShopifyCart = (function() {
         <div class="cart-drawer-empty">
           <span class="empty-icon">🛒</span>
           <p>Tu carrito está vacío</p>
-          <a href="/collections/all" class="btn-primary">VER CATÁLOGO</a>
+          <a href="/collections/catalogo" class="btn-primary">VER CATÁLOGO</a>
         </div>
       `;
       totalEl.innerText = '$0.00';
