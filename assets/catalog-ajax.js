@@ -53,8 +53,8 @@ class CatalogAJAX {
     // Robust delegation with multiple triggers
     document.addEventListener('click', (e) => {
       const target = e.target;
-      const btn = target.closest('.js-qv-open-btn, .btn-quick-view, .product-image-container');
-      const card = target.closest('.js-qv-card');
+      const btn = target.closest('.js-qv-trigger, .btn-quick-view, .product-image-container');
+      const card = target.closest('.js-qv-trigger');
       
       if (!card || !btn) return;
       
